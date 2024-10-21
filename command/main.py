@@ -1,4 +1,5 @@
 import re
+import random
 import speech_recognition as sr
 from gtts import gTTS
 import os
@@ -46,7 +47,7 @@ def listen_command():
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         print("Đang lắng nghe...")
-        audio = recognizer.listen(source)
+        audio = recognizer.listen(source, timeout=5)
         try:
             command = recognizer.recognize_google(audio, language='vi-VN')
             print(f"Lệnh của bạn: {command}")
@@ -187,6 +188,7 @@ def process_command(command):
         print(f"ChatGPT trả lời: {chatgpt_answer}")
         speak(chatgpt_answer)
 
+
 # test
 # print("API key",API_KEY)
 # a= listen_command()
@@ -196,6 +198,42 @@ def process_command(command):
 
 # process_command("elon musk là ai")
 # process_command("bật đèn phòng khách lên")
-process_command(listen_command())
+# process_command(listen_command())
 
 # speak(chatgpt_response(listen_command()))
+
+def main():
+	text1 = "Ơi, Aya đây"
+	text2 = "Tui nè, có gì không"
+	text3 = "Hở, có chuyện gì không"
+	text4 = "À há"
+	num = random.randint(1,3)
+	if (num == 1):
+		print(f"{text1}")
+		speak(text1)
+	elif (num == 2):
+		print(f"{text2}")
+		speak(text2)
+	elif (num == 3):
+		print(f"{text3}")
+		speak(text3)
+	else:
+		print(f"{text4}")
+		speak(text4)
+	while 1:
+		# print("APT key", API_KEY)
+		command = listen_command()
+		if "cảm ơn" in command.lower() or "Cảm ơn" in command.lower():
+			chatgpt_answer = "Không có gì"
+			print(f"ChatGPT trả lời: {chatgpt_answer}")
+			speak(chatgpt_answer)
+			break
+		else:
+			process_command(command)
+			print(f"Còn gì nữa không")
+			speak("Còn gì nữa không")
+
+
+if __name__ == "__main__":
+    main()
+
