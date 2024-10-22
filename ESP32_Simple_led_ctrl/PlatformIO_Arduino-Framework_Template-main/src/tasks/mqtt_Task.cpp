@@ -5,9 +5,9 @@
 // Adafruit IO MQTT credentials
 // const char* mqttServer = "io.adafruit.com";
 // const int mqttPort = 1883;
-// const char* mqttUser = "duongwt16";  // Replace with your Adafruit IO username
-// const char* mqttKey = "aio_CMfw58avy7Cnbk8Pi3SYVJNgoEgf";  // Replace with your Adafruit IO key
-// const char* feedName = "duongwt16/feeds/led";  // Replace with your feed name
+// const char* mqttUser = "";  // Replace with your Adafruit IO username
+// const char* mqttKey = "";  // Replace with your Adafruit IO key
+// const char* feedName = "";  // Replace with your feed name
 
 WiFiClient wifiClient;
 Adafruit_MQTT_Client mqttClient(&wifiClient, mqttServer, mqttPort, mqttUser, mqttKey);
