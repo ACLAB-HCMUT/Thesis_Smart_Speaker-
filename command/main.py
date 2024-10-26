@@ -32,6 +32,7 @@ def chatgpt_response(prompt):
     data = {
         "model": "gpt-3.5-turbo",
         "messages": [
+            {"role": "system", "content": "Bạn là một trợ lý điều khiển nhà thông minh tên là Aya!"},
             {"role": "assistant", "content": prompt}
         ],
         "max_tokens": 70,
@@ -154,25 +155,11 @@ def process_command(command):
 
 
 def main():
-	text1 = "Ơi, Aya đây"
-	text2 = "Tui nè, có gì không"
-	text3 = "Hở, có chuyện gì không"
-	text4 = "À há"
-	num = random.randint(1,3)
-	if (num == 1):
-		print(f"{text1}")
-		speak(text1)
-	elif (num == 2):
-		print(f"{text2}")
-		speak(text2)
-	elif (num == 3):
-		print(f"{text3}")
-		speak(text3)
-	else:
-		print(f"{text4}")
-		speak(text4)
-	while 1:
-		# print("APT key", API_KEY)
+    
+	greetings = ["Ơi, Aya đây", "Tui nè, có gì không", "Hở, có chuyện gì không", "À há"]
+	greeting = random.choice(greetings)
+	speak(greeting)
+	while True:
 		command = listen_command()
 		if "cảm ơn" in command.lower() or "Cảm ơn" in command.lower():
 			chatgpt_answer = "Không có gì"
