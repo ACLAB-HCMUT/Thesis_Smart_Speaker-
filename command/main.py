@@ -6,11 +6,24 @@ import os
 import requests
 import json
 from dotenv import load_dotenv
+from Adafruit_IO import Client, Data
+
+
 load_dotenv()
+AIO_USERNAME = os.getenv('AIO_USERNAME')
 API_KEY = os.getenv('API_KEY')
+AIO_KEY = os.getenv('AIO_KEY')
+CHATGPT_API_URL = os.getenv('CHATGPT_API_URL')
+aio = Client(AIO_USERNAME, AIO_KEY)
+
+# control light 
+def control_light(action):
+    feed_name = 'led'  
+    value = "ON" if action == 'on' else "OFF"
+    aio.send_data(feed_name, value)
+    print(f"Đã gửi lệnh {value} tới feed '{feed_name}'.")
 # request chatpt 
 def chatgpt_response(prompt):
-    url = "https://yescale.one/v1/chat/completions"
     headers = {
         "Content-Type":"application/json",
         "Authorization":f"Bearer {API_KEY}"  
@@ -21,14 +34,14 @@ def chatgpt_response(prompt):
         "messages": [
             {"role": "assistant", "content": prompt}
         ],
-        "max_tokens": 50,
+        "max_tokens": 70,
         "stream": False,
         "temperature": -1,
         "top_p": 1
     }
 
     try:
-        response = requests.post(url, headers=headers, data=json.dumps(data))
+        response = requests.post(CHATGPT_API_URL, headers=headers, data=json.dumps(data))
         response.raise_for_status()
         result = response.json()
         # retrun from chatgpt
@@ -73,57 +86,7 @@ def is_device_command(command):
     return bool(re.search(action_pattern, command)) or \
            bool(re.search(room_pattern, command)) or \
            bool(re.search(device_pattern, command))
-# def process_command(command):
-    
-#     # Action
-#     actions = {
-#         'bật': 'on',
-#         'mở': 'on',
-#         'tắt': 'off',
-#         'đóng': 'off'
-#     }
-#     rooms = ['phòng khách', 'phòng ngủ', 'phòng bếp', 'phòng làm việc']
-#     devices = ['đèn', 'cửa', 'máy lạnh']
 
-#     # regex
-#     room_pattern = r'\b(' + '|'.join(rooms) + r')\b'
-#     device_pattern = r'\b(' + '|'.join(devices) + r')\b'
-#     action_pattern = r'\b(' + '|'.join(actions.keys()) + r')\b'
-
-#     # search for key words
-#     room_match = re.search(room_pattern, command, re.IGNORECASE)
-#     device_match = re.search(device_pattern, command, re.IGNORECASE)
-#     action_match = re.search(action_pattern, command, re.IGNORECASE)
-#     response=""
-#     # case 1: full command 
-#     if room_match and device_match and action_match:
-#         room = room_match.group(0)
-#         device = device_match.group(0)
-#         action = actions[action_match.group(0).lower()]
-#         response=f"Đang {action_match.group(0).lower()} {device} ở {room}"
-    
-#     # case 2: missing device, but room, action are present
-#     elif room_match and action_match and not device_match:
-#         room = room_match.group(0)
-#         action = actions[action_match.group(0).lower()]
-#         response=f"Vui lòng chỉ định thiết bị để {action_match.group(0).lower()} ở {room}."
-    
-#     # case 3: missing action, but room, device are present
-#     elif room_match and device_match and not action_match:
-#         room = room_match.group(0)
-#         device = device_match.group(0)
-#         response=f"Vui lòng chỉ định hành động cho {device} ở {room}."
-    
-#     # case 4: room mentioned but missing both action and device
-#     elif room_match and not action_match and not device_match:
-#         room = room_match.group(0)
-#         response=f"Vui lòng chỉ định thiết bị và hành động ở {room}."
-    
-#     # case 5: command not recognized
-#     else:
-#         response="Lệnh không được nhận diện, vui lòng thử lại."
-#     print(response)
-#     speak(response)
 
 def process_command(command):
     if is_device_command(command):
@@ -151,7 +114,8 @@ def process_command(command):
             device = device_match.group(0)
             action = actions[action_match.group(0).lower()]
             response=f"Đang {action_match.group(0).lower()} {device} ở {room}"
-        
+            control_light(action)  # Gọi hàm điều khiển đèn
+      
         # case 2: missing device, but room, action are present
         elif room_match and action_match and not device_match:
             room = room_match.group(0)
@@ -189,19 +153,6 @@ def process_command(command):
         speak(chatgpt_answer)
 
 
-# test
-# print("API key",API_KEY)
-# a= listen_command()
-# print("command", a)
-# print(is_device_command(a)) 
-# query=listen_command()
-
-# process_command("elon musk là ai")
-# process_command("bật đèn phòng khách lên")
-# process_command(listen_command())
-
-# speak(chatgpt_response(listen_command()))
-
 def main():
 	text1 = "Ơi, Aya đây"
 	text2 = "Tui nè, có gì không"
@@ -236,4 +187,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
