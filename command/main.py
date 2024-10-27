@@ -1,4 +1,8 @@
 import random
+import sys
+import os
+sys.path.append(os.path.dirname(__file__))
+
 from process import *
 
 def main():
@@ -21,6 +25,7 @@ def main():
 		command= command.lower()
 		
 		if any(keyword in command for keyword in end_keywords):
+			speak("Không có chi")
 			print(f"ket chuc chuong trinh")
 			break
 		else:
