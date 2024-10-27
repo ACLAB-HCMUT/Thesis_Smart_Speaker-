@@ -2,7 +2,8 @@ import random
 from process import *
 
 def main():
-	greetings = ["Ơi, Aya đây", "Tui nè, có gì không", "Hở, có chuyện gì không", "À há"]
+	end_keywords = ["không", "hết rồi", "hết", "kết thúc", "cảm ơn"]
+	greetings = ["Ơi, Aya đây", "Tui nè, có gì không", "Hở, có chuyện gì không"]
 	greeting = random.choice(greetings)
 	follow_up_questions = [
         "Còn gì nữa không?",
@@ -14,10 +15,13 @@ def main():
 	speak(greeting)
 	while True:
 		command = listen_command()
-		if "cảm ơn" in command.lower() or "Cảm ơn" in command.lower():
-			chatgpt_answer = "Không có gì"
-			print(f"ChatGPT trả lời: {chatgpt_answer}")
-			speak(chatgpt_answer)
+		if command is None:
+			print("ket thuc do khong nhan dien duoc giong noi")
+			break
+		command= command.lower()
+		
+		if any(keyword in command for keyword in end_keywords):
+			print(f"ket chuc chuong trinh")
 			break
 		else:
 			process_command(command)
