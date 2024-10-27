@@ -3,6 +3,14 @@ from gtts import gTTS
 from control import control_light
 from chatgpt import *
 import speech_recognition as sr
+def speak(text):
+    tts = gTTS(text=text, lang='vi')
+    tts.save("command.mp3")
+    audio_segment = AudioSegment.from_file("command.mp3")  
+    pydub_play(silence + audio_segment)
+    # if os.system("mpg123 command.mp3") != 0:  
+    #     os.system("aplay command.mp3")  
+
 def listen_command():
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
@@ -14,21 +22,12 @@ def listen_command():
             return command.lower()
         except sr.UnknownValueError:
             print("Không thể nhận diện được giọng nói.")
-            error_response = silence + AudioSegment.from_mp3("sound/recognition_error.mp3")
-            pydub_play(error_response)
+            speak("Không thể nhận diện được giọng nói.")
             return None
         except sr.RequestError as e:
             print(f"Không thể yêu cầu dịch vụ Google Speech Recognition; {e}")
             return None
 
-
-def speak(text):
-    tts = gTTS(text=text, lang='vi')
-    tts.save("sound/command.mp3")
-    audio_segment = AudioSegment.from_file("sound/command.mp3")  
-    pydub_play(silence + audio_segment)
-    # if os.system("mpg123 command.mp3") != 0:  
-    #     os.system("aplay command.mp3")  
 
 def is_device_command(command):
     actions = ['bật', 'mở', 'tắt', 'đóng']

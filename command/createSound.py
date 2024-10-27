@@ -3,7 +3,7 @@ import os
 
 
 messages = {
-    "ask_more": "Còn gì nữa không",
+    "ask_more": "test",
     
 }
 
