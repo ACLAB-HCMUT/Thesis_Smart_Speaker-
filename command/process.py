@@ -4,7 +4,7 @@ from control import control_light
 from chatgpt import *
 import speech_recognition as sr
 def speak(text):
-    tts = gTTS(text=text, lang='vi')
+    tts = gTTS(text=text, lang='vi') # english: lang='en', vietnamese: lang='vi'
     tts.save("command.mp3")
     audio_segment = AudioSegment.from_file("command.mp3")  
     pydub_play(silence + audio_segment)
@@ -22,7 +22,7 @@ def listen_command():
             return command.lower()
         except sr.UnknownValueError:
             print("Không thể nhận diện được giọng nói.")
-            speak("Không thể nhận diện được giọng nói.")
+            speak("Bạn nói gì tôi nghe không rõ.")
             return None
         except sr.RequestError as e:
             print(f"Không thể yêu cầu dịch vụ Google Speech Recognition; {e}")
