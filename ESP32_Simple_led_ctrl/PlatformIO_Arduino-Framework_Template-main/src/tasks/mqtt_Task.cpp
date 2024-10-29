@@ -1,17 +1,18 @@
 #include "mqtt_Task.h"
 #include "led_Task.h"
-
+#include "fan_Task.h"
 // Adafruit IO MQTT 
-// const char* mqttServer = "io.adafruit.com";
-// const int mqttPort = 1883;
-// const char* mqttUser = "";
-// const char* mqttKey = "";
+const char* mqttServer = "io.adafruit.com";
+const int mqttPort = 1883;
+const char* mqttUser = "duongwt16";
+const char* mqttKey = "aio_rXcg89445iSG296RNDE1sCOPHpCu";
 // **********************************************************//
 
 // Feed names
 const char* feedNames[] = {
-    "duongwt16/feeds/led",
-   // "duongwt16/feeds/led2",  // Add more feeds as needed
+    "duongwt16/feeds/led1",
+    "duongwt16/feeds/led2",  // Add more feeds as needed
+    "duongwt16/feeds/fan"
 };
 
 // Feed subscriptions array
@@ -50,6 +51,20 @@ void handleFeedMessage(const char* topic, const char* message) {
   } else if (strcmp(topic, feedNames[1]) == 0) {
     // Handle second LED feed (or any other function for different feed)
     // Add control logic for the second feed here
+    // Handle LED feed
+    if (strcmp(message, "1") == 0) {
+      pixels.setPixelColor(1, pixels.Color(0, 255, 0));  // LED on
+    } else if (strcmp(message, "0") == 0) {
+      pixels.setPixelColor(1, pixels.Color(0, 0, 0));    // LED off
+    }
+    pixels.show();
+  } else if (strcmp(topic, feedNames[2]) == 0) {
+    // Handle fan feed
+    if (strcmp(message, "1") == 0) {
+      turnFanOn();  // Turn fan on
+    } else if (strcmp(message, "0") == 0) {
+      turnFanOff();  // Turn fan off
+    }
   }
   Serial.printf(" %s: %s\n", topic, message);
 }
