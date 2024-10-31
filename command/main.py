@@ -19,6 +19,10 @@ def main():
 	speak(greeting)
 	while True:
 		command = listen_command()
+		# command = "Tôn đức thắng là ai"
+		# command ="bật đèn phòng khách cho tôi"
+		# command ="bật quạt phòng khách cho tôi"
+		# command ="Tăng âm lượng lên 80%"
 		if command is None:
 			print("ket thuc do khong nhan dien duoc giong noi")
 			break
@@ -30,6 +34,7 @@ def main():
 			break
 		else:
 			process_command(command)
+			# break
 			follow_up = random.choice(follow_up_questions)
 			print(follow_up)
 			speak(follow_up)
