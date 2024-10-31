@@ -12,3 +12,6 @@
 -------------------------------------------------------------------------------------
 # File __init__.py: 
 	Used for main.cpp know directory of command/process, etc
+-------------------------------------------------------------------------------------
+#Mosquitto on Raspberry Pi 4
+![image](https://github.com/user-attachments/assets/db553824-80a2-4449-af2b-5ba65b56be1f)
