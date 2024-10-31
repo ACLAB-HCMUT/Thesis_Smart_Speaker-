@@ -1,6 +1,6 @@
 import re
 from gtts import gTTS
-from control import control_light
+from control import *
 from chatgpt import *
 import speech_recognition as sr
 def speak(text):
@@ -30,7 +30,7 @@ def listen_command():
 
 
 def is_device_command(command):
-    actions = ['bật', 'mở', 'tắt', 'đóng']
+    actions = ['bật', 'mở', 'tắt', 'đóng', 'tăng', 'giảm', 'điều chỉnh', 'chỉnh']
     rooms = ['phòng khách', 'phòng ngủ', 'phòng bếp', 'phòng làm việc']
     devices = ['đèn', 'cửa', 'máy lạnh']
     
@@ -46,15 +46,34 @@ def is_device_command(command):
 
 
 def process_command(command):
-    if is_device_command(command):
+    if  'âm lượng' in command or 'loa' in command:
+        volume_level = re.search(r'\d+', command)
+        if volume_level:
+            volume_level = int(volume_level.group())
+            if volume_level > 100:
+                volume_level = 100
+            elif volume_level < 0:
+                volume_level = 0
+        else:
+            volume_level = 50
+        set_volume(volume_level)
+        response = f"Đã điều chỉnh âm lượng đến {volume_level}%."
+        print(response)
+        speak(response)
+    elif is_device_command(command):
         actions = {
             'bật': 'on',
             'mở': 'on',
             'tắt': 'off',
             'đóng': 'off'
         }
+        devices = {
+            'đèn': 'led1',
+            'quạt': 'fan',  
+            'cửa': 'door',
+            'máy lạnh': 'ac'
+        }
         rooms = ['phòng khách', 'phòng ngủ', 'phòng bếp', 'phòng làm việc']
-        devices = ['đèn', 'cửa', 'máy lạnh']
 
         room_pattern = r'\b(' + '|'.join(rooms) + r')\b'
         device_pattern = r'\b(' + '|'.join(devices) + r')\b'
@@ -71,7 +90,8 @@ def process_command(command):
             device = device_match.group(0)
             action = actions[action_match.group(0).lower()]
             response=f"Đang {action_match.group(0).lower()} {device} ở {room}"
-            control_light(action)  # Gọi hàm điều khiển đèn
+            feed_name=devices[device]
+            control_device(action,feed_name)  
       
         # case 2: missing device, but room, action are present
         elif room_match and action_match and not device_match:
