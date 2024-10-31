@@ -14,4 +14,10 @@
 	Used for main.cpp know directory of command/process, etc
 -------------------------------------------------------------------------------------
 # Mosquitto on Raspberry Pi 4
+
+ 	The overview of the broker
 ![image](https://github.com/user-attachments/assets/db553824-80a2-4449-af2b-5ba65b56be1f)
+
+	**MQTT Mosquitto Broker**
+![image](https://github.com/user-attachments/assets/79e91a12-e6e3-4e8c-9938-a68d36d049c0)
+
