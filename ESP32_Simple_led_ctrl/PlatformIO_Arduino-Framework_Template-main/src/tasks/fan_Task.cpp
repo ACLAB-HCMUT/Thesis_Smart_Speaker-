@@ -17,7 +17,7 @@ void setFanSpeed(uint8_t speed) {
 
 // Function to turn the fan on
 void turnFanOn() {
-    analogWrite(FAN_PIN, 150); // Set fan speed to maximum
+    analogWrite(FAN_PIN, 60); // Set fan speed to maximum
 }
 
 // Function to turn the fan off
