@@ -1,6 +1,10 @@
 import random
 import sys
 import os
+
+from pydub import AudioSegment
+from pydub.playback import play
+
 sys.path.append(os.path.dirname(__file__))
 
 from process import *
@@ -16,7 +20,8 @@ def main():
         "Có yêu cầu nào khác không?",
         "Có cần tôi làm gì nữa không?"
     ]
-	speak(greeting)
+	pydub_play(AudioSegment.from_file("welcome.mp3"))
+	#speak(greeting)
 	while True:
 		command = listen_command()
 		# command = "Tôn đức thắng là ai"
@@ -27,7 +32,7 @@ def main():
 			print("ket thuc do khong nhan dien duoc giong noi")
 			break
 		command= command.lower()
-		
+
 		if any(keyword in command for keyword in end_keywords):
 			speak("Không có chi")
 			print(f"ket chuc chuong trinh")
@@ -38,7 +43,6 @@ def main():
 			follow_up = random.choice(follow_up_questions)
 			print(follow_up)
 			speak(follow_up)
-
 
 if __name__ == "__main__":
     main()
