@@ -9,8 +9,6 @@ aio = Client(AIO_USERNAME, AIO_KEY)
 
 def control_device(action,feed_name): 
     value = "ON" if action == 'on' else "OFF"
-    # print("action",action)
-    # print("feed_name",feed_name)
     aio.send_data(feed_name, value)
     print(f"Đã gửi lệnh {value} tới feed '{feed_name}'.")
 

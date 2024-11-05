@@ -2,8 +2,6 @@ import random
 import sys
 import os
 
-from pydub import AudioSegment
-from pydub.playback import play
 
 sys.path.append(os.path.dirname(__file__))
 
@@ -20,8 +18,8 @@ def main():
         "Có yêu cầu nào khác không?",
         "Có cần tôi làm gì nữa không?"
     ]
-	pydub_play(AudioSegment.from_file("welcome.mp3"))
-	#speak(greeting)
+	# pydub_play(AudioSegment.from_file("welcome.mp3"))
+	speak(greeting)
 	while True:
 		command = listen_command()
 		# command = "Tôn đức thắng là ai"
