@@ -2,27 +2,25 @@ import re
 from gtts import gTTS
 from control import *
 from chatgpt import *
-from pydub import AudioSegment
+from playsound import playsound
 import speech_recognition as sr
 
+# def speak(text):
+#     tts = gTTS(text=text, lang='vi') # english: lang='en', vietnamese: lang='vi'
+#     tts.save("command.mp3")
+#     # Adjust the speed of the mp3 file
+#     audio = AudioSegment.from_file("command.mp3")
+#     # Speed up by 1.5x
+#     audio = audio.speedup(playback_speed=1.35)
+#     audio.export("command.mp3", format="mp3")
+#     audio_segment = AudioSegment.from_file("command.mp3")  
+#     pydub_play(silence + audio_segment)
+
+
 def speak(text):
-    tts = gTTS(text=text, lang='vi') # english: lang='en', vietnamese: lang='vi'
+    tts = gTTS(text=text, lang='vi')
     tts.save("command.mp3")
-    # Adjust the speed of the mp3 file
-    audio = AudioSegment.from_file("command.mp3")
-    # Speed up by 1.5x
-    audio = audio.speedup(playback_speed=1.35)
-    audio.export("command.mp3", format="mp3")
-    audio_segment = AudioSegment.from_file("command.mp3")  
-    pydub_play(silence + audio_segment)
-#-----------------------------------------------------------------
-#def speak(text):
-    #tts = gTTS(text=text, lang='vi') # english: lang='en', vietnamese: lang='vi'
-    #tts.save("command.mp3")
-    #audio_segment = AudioSegment.from_file("command.mp3")  
-    #pydub_play(silence + audio_segment)
-   # # if os.system("mpg123 command.mp3") != 0:  
-   # #     os.system("aplay command.mp3")  
+    playsound("command.mp3")
 
 def listen_command():
     recognizer = sr.Recognizer()
