@@ -35,7 +35,7 @@ LDFLAGS += -lm 						# Link to math.h
 LDFLAGS += -lstdc++					# Link to stdc++.h
 LDFLAGS += -lasound                 # Link to ALSA (audio capture library)
 LDFLAGS += $(shell python3-config --ldflags)  # Link Python library
-LDFLAGS += -L/usr/lib/python3.9/config-3.9-aarch64-linux-gnu -lpython3.9
+LDFLAGS += -L/usr/lib/python3.10/config-3.10-aarch64-linux-gnu -lpython3.10
 
 # Include C source code for required libraries
 CSOURCES += $(wildcard edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/*.c) \
