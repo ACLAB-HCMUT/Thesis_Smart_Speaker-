@@ -4,7 +4,6 @@ from control import *
 from chatgpt import *
 from function import *
 from playsound import playsound
-import simpleaudio as sa
 import speech_recognition as sr
 from langdetect import detect
 
@@ -21,30 +20,25 @@ from langdetect import detect
 
 
 def speak(text):
-    tts = gTTS(text=text, lang=detect(text))
-    tts.save("command.mp3")
-
-    audio = AudioSegment.from_file("command.mp3")
-    audio = audio.speedup(playback_speed=1.35)
-    audio.export("command.mp3", format="mp3")
-    audio_segment = AudioSegment.from_file("command.mp3")  
-    pydub_play(silence + audio_segment)
-    #playsound("command.mp3")
+    tts = gTTS(text=text, lang='vi')
+    tts.save("./sound/command.mp3")
+    # 18/11/2024 - datph - Replace pydub by playsound to play command.mp3
+    # audio = AudioSegment.from_file("command.mp3")
+    # audio = audio.speedup(playback_speed=1.35)
+    # audio.export("command.mp3", format="mp3")
+    # audio_segment = AudioSegment.from_file("command.mp3")  
+    # pydub_play(silence + audio_segment)
+    playsound("./sound/command.mp3")
 
 def listen_command():
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         print("Đang lắng nghe...")
-        audio = recognizer.listen(source, timeout=5, phrase_time_limit=5)
+        audio = recognizer.listen(source, timeout=5)
         try:
-            entext = recognizer.recognize_google(audio, language='en-US')
-            vitext = recognizer.recognize_google(audio, language='vi-VN')
-            if len(entext) > len(vitext):
-                print(f"Your command: {entext}")
-                return entext.lower()
-            elif len(vitext) > len(entext):
-                print(f"Lệnh của bạn: {vitext}")
-                return vitext.lower()
+            command = recognizer.recognize_google(audio, language='vi-VN')
+            print(command)
+            return command
         except sr.UnknownValueError:
             print("Không thể nhận diện được giọng nói.")
             speak("Bạn nói gì tôi nghe không rõ.")
@@ -147,7 +141,8 @@ def process_command(command):
         
         print(response)
         speak(response)
-    elif 'add event' in command or 'create event' in command:
+    # 18/11/2024 - datph - add 1 condition branch add event for calendar feature
+    elif 'tạo sự kiện lịch' in command or 'thêm sự kiện lịch' in command:
         process_of_add_event()
 
     else:
