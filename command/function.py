@@ -4,7 +4,6 @@ from control import *
 from chatgpt import *
 from gtts import gTTS
 from playsound import playsound
-import simpleaudio as sa
 import speech_recognition as sr
 from langdetect import detect
 
@@ -26,23 +25,24 @@ conn.commit()
 print("Database and table setup complete.")
 
 def speak(text):
-    tts = gTTS(text=text, lang='en')
-    tts.save("command.mp3")
+	tts = gTTS(text=text, lang='vi')
+	tts.save("./sound/command.mp3")
+	playsound("./sound/command.mp3")
 
-    audio = AudioSegment.from_file("command.mp3")
-    audio = audio.speedup(playback_speed=1.1)
-    audio.export("command.mp3", format="mp3")
-    audio_segment = AudioSegment.from_file("command.mp3")  
-    pydub_play(silence + audio_segment)
+	# audio = AudioSegment.from_file("command.mp3")
+	# audio = audio.speedup(playback_speed=1.1)
+	# audio.export("command.mp3", format="mp3")
+	# audio_segment = AudioSegment.from_file("command.mp3")  
+	# pydub_play(silence + audio_segment)
 
 def listen_command():
 	recognizer = sr.Recognizer()
 	with sr.Microphone() as source:
-		print("Listening...")
+		print("Đang lắng nghe...")
 		audio = recognizer.listen(source, timeout=5)
 		try:
-			entext = recognizer.recognize_google(audio, language='en-US')
-			return entext.lower()
+			vitext = recognizer.recognize_google(audio, language='vi-VN')
+			return vitext.lower()
 			# vitext = recognizer.recognize_google(audio, language='vi-VN')
 			# if len(entext) > len(vitext):
 			# 	print(f"Your command: {entext}")
@@ -51,105 +51,140 @@ def listen_command():
 			# 	print(f"Lệnh của bạn: {vitext}")
 			# 	return vitext.lower()
 		except sr.UnknownValueError:
-			print("I can not hear you.")
-			speak("I can not hear you.")
+			print("Không thể nhận diện được giọng nói.")
+			speak("Bạn nói gì tôi nghe không rõ.")
 			return None
 		except sr.RequestError as e:
-			print(f"Can not request Google Speech Recognition service; {e}")
+			print(f"Không thể yêu cầu dịch vụ Google Speech Recognition; {e}")
 			return None
 
 def process_of_add_event():
 
-	speak("What is your event name ?")
+	speak("Lịch mới của bạn tên gì ?")
 	event_name = listen_command()
 	print(f"{event_name}")
-	confirm_flag = "no"
-	while (confirm_flag != "yes" or confirm_flag != "Yes"):
-		speak(f"Your event name is {event_name}, yes or no ?")
-		confirm_flag = listen_command()
-		print(f"{confirm_flag}")
-		if confirm_flag == "yes" or confirm_flag == "Yes":
+	confirm_flag = 0
+	while (confirm_flag != 1):
+		speak(f"Lịch mới của bạn tên là {event_name}, đúng hay sai ?")
+		confirm_speech = listen_command()
+		print(f"{confirm_speech}")
+
+		if ("Đúng" in confirm_speech or "đúng" in confirm_speech or "chính xác" in confirm_speech):
+			confirm_flag = 1
+		else: # apply for case true but speed don't reconize exactly and case false
+			confirm_flag = 0
+
+		if confirm_flag == 1:
 			break
 		else:
-			speak("Let's speak event name again !")
+			speak("Bạn đọc lại tên lịch nhé !")
 			event_name = listen_command()
 			print(f"{event_name}")
-	speak("Ok. Which date ?")
+	speak("Ok. Lịch này ngày tháng năm nào vậy ?")
 
 	date = listen_command()
 	print(f"{date}")
-	confirm_flag = "no"
-	while (confirm_flag != "yes" or confirm_flag != "Yes"):
-		speak(f"Your date is {date}, yes or no ?")
-		confirm_flag = listen_command()
-		print(f"{confirm_flag}")
-		if confirm_flag == "yes" or confirm_flag == "Yes":
+	confirm_flag = 0
+	while (confirm_flag != 1):
+		speak(f"Ngày của lịch là {date}, đúng hay sai ?")
+		confirm_speech = listen_command()
+		print(f"{confirm_speech}")
+
+		if ("Đúng" in confirm_speech or "đúng" in confirm_speech or "chính xác" in confirm_speech):
+			confirm_flag = 1
+		else:
+			confirm_flag = 0
+
+		if confirm_flag == 1:
 			break
 		else:
-			speak("Let's speak date again !")
+			speak("Bạn đọc lại ngày tháng năm lịch nhé !")
 			date = listen_command()
 			print(f"{date}")
-	speak("Ok. When your event begin ?")
+	speak("Ok. Khi nào lịch bắt đầu ?")
 
 	start_time = listen_command()
 	print(f"{start_time}")
-	confirm_flag = "no"
-	while (confirm_flag != "yes" or confirm_flag != "Yes"):
-		speak(f"Your start time is {start_time}, yes or no ?")
-		confirm_flag = listen_command()
-		print(f"{confirm_flag}")
-		if confirm_flag == "yes" or confirm_flag == "Yes":
+	confirm_flag = 0
+	while (confirm_flag != 1):
+		speak(f"Lịch bắt đầu lúc {start_time}, đúng hay sai ?")
+		confirm_speech = listen_command()
+		print(f"{confirm_speech}")
+
+		if ("Đúng" in confirm_speech or "đúng" in confirm_speech or "chính xác" in confirm_speech):
+			confirm_flag = 1
+		else:
+			confirm_flag = 0
+
+		if confirm_flag == 1:
 			break
 		else:
-			speak("Let's speak start time again !")
+			speak("Bạn đọc lại thời gian bắt đầu nhé !")
 			start_time = listen_command()
 			print(f"{start_time}")
-	speak("Ok. When your event end ?")
+	speak("Ok. Khi nào lịch kết thúc ?")
 
 	stop_time = listen_command()
 	print(f"{stop_time}")
-	confirm_flag = "no"
-	while (confirm_flag != "yes" or confirm_flag != "Yes"):
-		speak(f"Your stop time is {stop_time}, yes or no ?")
-		confirm_flag = listen_command()
-		print(f"{confirm_flag}")
-		if confirm_flag == "yes" or confirm_flag == "Yes":
+	confirm_flag = 0
+	while (confirm_flag != 1):
+		speak(f"Lịch kết thúc lúc {stop_time}, đúng hay sai ?")
+		confirm_speech = listen_command()
+		print(f"{confirm_speech}")
+
+		if ("Đúng" in confirm_speech or "đúng" in confirm_speech or "chính xác" in confirm_speech):
+			confirm_flag = 1
+		else:
+			confirm_flag = 0
+
+		if confirm_flag == 1:
 			break
 		else:
-			speak("Let's speak stop time again !")
+			speak("Bạn đọc lại thời gian kết thúc nhé !")
 			stop_time = listen_command()
 			print(f"{stop_time}")
-	speak("Ok. Where your event place ?")
+	speak("Ok. Địa điểm diễn ra mục lịch này ở đâu ?")
 
 	location = listen_command()
 	print(f"{location}")
-	confirm_flag = "no"
-	while (confirm_flag != "yes" or confirm_flag != "Yes"):
-		speak(f"Your location is {location}, yes or no ?")
-		confirm_flag = listen_command()
-		print(f"{confirm_flag}")
-		if confirm_flag == "yes" or confirm_flag == "Yes":
+	confirm_flag = 0
+	while (confirm_flag != 1):
+		speak(f"Địa điểm là ở {location}, đúng hay sai ?")
+		confirm_speech = listen_command()
+		print(f"{confirm_speech}")
+
+		if ("Đúng" in confirm_speech or "đúng" in confirm_speech or "chính xác" in confirm_speech):
+			confirm_flag = 1
+		else:
+			confirm_flag = 0
+
+		if confirm_flag == 1:
 			break
 		else:
-			speak("Let's speak location again !")
+			speak("Bạn nói lại địa điểm nhé !")
 			location = listen_command()
 			print(f"{location}")
-	speak("Ok. Any description more ?")
+	speak("Ok. Có chú thích hay lưu ý gì không ?")
 
 	description = listen_command()
 	print(f"{description}")
-	confirm_flag = "no"
-	while (confirm_flag != "yes" or confirm_flag != "Yes"):
-		speak(f"Your description is {description}, yes or no ?")
-		confirm_flag = listen_command()
-		print(f"{confirm_flag}")
-		if confirm_flag == "yes" or confirm_flag == "Yes":
+	confirm_flag = 0
+	while (confirm_flag != 1):
+		speak(f"Chú thích của lịch là {description}, đúng hay sai ?")
+		confirm_speech = listen_command()
+		print(f"{confirm_speech}")
+		if ("Đúng" in confirm_speech or "đúng" in confirm_speech or "chính xác" in confirm_speech):
+			confirm_flag = 1
+		else:
+			confirm_flag = 0
+
+		if confirm_flag == 1:
 			break
 		else:
-			speak("Let's speak description again !")
+			speak("Bạn đọc lại chú thích nhé !")
 			description = listen_command()
 			print(f"{description}")
-	speak("Ok, done. I saved your event. Thank you")
+	speak("Ok, tôi đã lưu lịch. Cảm ơn nhé")
 
 	add_event(event_name, date, start_time, stop_time, location, description)
 	retrieve_events(date)
