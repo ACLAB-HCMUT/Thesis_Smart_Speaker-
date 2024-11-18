@@ -2,7 +2,7 @@ import re
 from gtts import gTTS
 from control import *
 from chatgpt import *
-from function import *
+from google_calendar import *
 from playsound import playsound
 import speech_recognition as sr
 from langdetect import detect
