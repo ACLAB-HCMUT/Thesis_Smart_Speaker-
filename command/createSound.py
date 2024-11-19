@@ -1,6 +1,4 @@
 from gtts import gTTS
-import os
-
 
 messages = {
     "ask_more": "test",
