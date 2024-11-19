@@ -16,15 +16,15 @@ def listen_command(max_attempts=2):
             except sr.UnknownValueError:
                 attempts += 1
                 print("Không thể nhận diện được giọng nói.")
-                speak("Bạn nói gì tôi nghe không rõ.")
+                playsound("sound/listen_error.mp3")
             except sr.WaitTimeoutError:
                 attempts += 1
                 print("Không nghe thấy giọng nói. Hãy thử lại.")
-                speak("Môi trường có vẻ hơi ồn. Hãy thử lại trong một nơi yên tĩnh hơn.")
+                playsound("sound/noise_error.mp3")
             except sr.RequestError as e:
                 print(f"Không thể yêu cầu dịch vụ Google Speech Recognition; {e}")
-                speak("Có vấn đề với dịch vụ nhận diện. Vui lòng kiểm tra kết nối mạng.")
+                playsound("sound/network_error.mp3")
                 return None
-    speak("Hẹn gặp lại!")
+    playsound("see_again.mp3")
     return None
 
