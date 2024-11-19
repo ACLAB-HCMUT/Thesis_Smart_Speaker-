@@ -13,9 +13,9 @@ def search_youtube(query):
         maxResults=1
     )
     response = request.execute()
-    if response['items']:
-        video_id = response['items'][0]['id']['videoId']
-        video_title = response['items'][0]['snippet']['title']
+    if response["items"]:
+        video_id = response["items"][0]["id"]["videoId"]
+        video_title = response["items"][0]["snippet"]["title"]
         print(f"Found video: {video_title}")
         return f"https://www.youtube.com/watch?v={video_id}"
     else:

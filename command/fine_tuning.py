@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
-CHATGPT_API_URL = os.getenv('CHATGPT_API_URL')
-MODEL = os.getenv('MODEL')
+CHATGPT_API_URL = os.getenv("CHATGPT_API_URL")
+MODEL = os.getenv("MODEL")
 
 def fine_tuning_response(prompt):
     headers = {
@@ -32,7 +32,7 @@ def fine_tuning_response(prompt):
         
        
         result = response.json()
-        return result['choices'][0]['message']['content']
+        return result["choices"][0]["message"]["content"]
     except requests.exceptions.RequestException as e:
         print(f"Error calling ChatGPT API: {e}")
         return "Xin lỗi, không thể kết nối với API."
