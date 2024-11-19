@@ -3,7 +3,8 @@ from chatgpt import *
 from is_device import *
 from speak import *
 from fine_tuning import *
-from google_calendar import *
+from search_agent import *
+# from google_calendar import *
 
 def process_command(command):
     if  'âm lượng' in command or 'loa' in command:
@@ -83,6 +84,10 @@ def process_command(command):
         
         print(response)
         speak(response)
+    elif "thời tiết" in command or "tin tức" in command or "sự kiện" in command or "hôm nay" in command:
+        tavily_answer=search_and_summarize(command)
+        speak(tavily_answer)
+        print(f"Final Answer: {search_and_summarize}")
 
     else:
         print("Gửi yêu cầu đến ChatGPT API...")
