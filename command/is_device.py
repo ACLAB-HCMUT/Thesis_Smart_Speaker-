@@ -1,9 +1,9 @@
 import re
 
 def is_device_command(command):
-    actions = ['bật', 'mở', 'tắt', 'đóng', 'tăng', 'giảm', 'điều chỉnh', 'chỉnh']
-    rooms = ['phòng khách', 'phòng ngủ', 'phòng bếp', 'phòng làm việc']
-    devices = ['đèn', 'cửa', 'máy lạnh']
+    actions = ["bật", "mở", "tắt", "đóng", "tăng", "giảm", "điều chỉnh", "chỉnh"]
+    rooms = ["phòng khách", "phòng ngủ", "phòng bếp", "phòng làm việc"]
+    devices = ["đèn", "cửa", "máy lạnh"]
     
     # regex
     action_pattern = r'\b(' + '|'.join(actions) + r')\b'

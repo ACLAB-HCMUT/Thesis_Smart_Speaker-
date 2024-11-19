@@ -1,8 +1,4 @@
-import os
-from dotenv import load_dotenv
-import requests
 from chatgpt import *
-
 
 load_dotenv()
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
@@ -63,5 +59,3 @@ def search_and_summarize(query):
     else:
         print("Tavily did not return any results.")
         return "Xin lỗi, tôi không thể tìm thấy thông tin phù hợp."
-
-    

@@ -26,7 +26,6 @@ def classify_gesture(landmarks):
         return "fist"
     return "unknown"
 
-
 cap = cv2.VideoCapture(0)
 
 print("Listening for gestures...")
@@ -35,7 +34,6 @@ while cap.isOpened():
     if not ret:
         break
 
-    
     frame = cv2.flip(frame, 1) 
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     result = hands.process(rgb_frame)
@@ -56,11 +54,9 @@ while cap.isOpened():
             else:
                 print("Unknown gesture")
 
-   
     cv2.imshow("Gesture Control", frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-
 
 cap.release()
 cv2.destroyAllWindows()

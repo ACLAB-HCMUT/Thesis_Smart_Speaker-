@@ -10,7 +10,7 @@ def listen_command(max_attempts=2):
             recognizer.adjust_for_ambient_noise(source, duration=1)  
             try:
                 audio = recognizer.listen(source, timeout=7, phrase_time_limit=7)
-                command = recognizer.recognize_google(audio, language='vi-VN')
+                command = recognizer.recognize_google(audio, language="vi-VN")
                 print(f"Lệnh của bạn: {command}")
                 return command.lower()
             except sr.UnknownValueError:
