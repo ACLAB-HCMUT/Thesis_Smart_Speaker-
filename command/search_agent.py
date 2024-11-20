@@ -1,14 +1,16 @@
 from chatgpt import *
-
+from datetime import datetime
 load_dotenv()
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 TAVILY_URL = os.getenv("TAVILY_URL")
 
 def search_tavily(query, max_results=5, search_depth="basic"):
-   
+    today = datetime.today().strftime("%Y-%m-%d")
+    location = "Thành phố Hồ Chí Minh"
+    query_with_location_and_date = f"Ngày hiện tại là {today}, người dùng đang ở {location} và muốn biết: {query}. Giữ câu trả lời ngắn gọn và súc tích. Không trả lời bằng các đường dẫn website và không đọc các liên kết. Nếu câu hỏi liên quan đến thời tiết, vui lòng sử dụng đơn vị nhiệt độ là độ C."
     params = {
         "api_key": TAVILY_API_KEY,
-        "query": query,
+        "query": query_with_location_and_date,
         "max_results": max_results,
         "search_depth": search_depth,
         "include_answer": False,
