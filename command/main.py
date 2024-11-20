@@ -3,10 +3,8 @@ import sys
 from process import *
 from listen import *
 sys.path.append(os.path.dirname(__file__))
-
-
 def main():
-	end_keywords_pattern = re.compile(r"\b(hết rồi|hết|kết|kết thúc|cảm ơn|that's all|thankss|thank you)\b", re.IGNORECASE)
+	end_keywords_pattern = re.compile(r"\b(hết rồi|hết|kết|kết thúc|cảm ơn|that's all|không|thankss|thank you)\b", re.IGNORECASE)
 	greetings = ["Ơi, Aya đây", "Tui nè, có gì không"]
 	follow_up_questions = [
         "Còn gì nữa không?",
