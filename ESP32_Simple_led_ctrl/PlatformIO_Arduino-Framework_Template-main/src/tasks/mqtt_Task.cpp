@@ -5,13 +5,13 @@
 const char* mqttServer = "io.adafruit.com";
 const int mqttPort = 1883;
 const char* mqttUser = "duongwt16";
-const char* mqttKey = "aio_pVqM47Ihz5pLoabM8q7ERdwSo4IH";
-// **********************************************************//
+const char* mqttKey = "aio_rpEG821XN1vVIRtdJ7ZEMhBsEldc";
+
 
 // Feed names
 const char* feedNames[] = {
     "duongwt16/feeds/led1",
-    "duongwt16/feeds/led2",  // Add more feeds as needed
+    "duongwt16/feeds/led2",  
     "duongwt16/feeds/fan"
 };
 
@@ -42,22 +42,24 @@ void connectToMqtt() {
 void handleFeedMessage(const char* topic, const char* message) {
   if (strcmp(topic, feedNames[0]) == 0) {
     // Handle LED feed
-    if (strcmp(message, "ON") == 0) {
-      pixels.setPixelColor(0, pixels.Color(0, 0, 255));  // LED on
-    } else if (strcmp(message, "OFF") == 0) {
-      pixels.setPixelColor(0, pixels.Color(0, 0, 0));    // LED off
-    }
-    pixels.show();
+    // if (strcmp(message, "ON") == 0) {
+    //   pixels.setPixelColor(0, pixels.Color(0, 0, 255));  // LED on
+    // } else if (strcmp(message, "OFF") == 0) {
+    //   pixels.setPixelColor(0, pixels.Color(0, 0, 0));    // LED off
+    // }
+    // pixels.show();
+    led_handle(0, message);
   } else if (strcmp(topic, feedNames[1]) == 0) {
     // Handle second LED feed (or any other function for different feed)
     // Add control logic for the second feed here
     // Handle LED feed
-    if (strcmp(message, "ON") == 0) {
-      pixels.setPixelColor(1, pixels.Color(0, 255, 0));  // LED on
-    } else if (strcmp(message, "OFF") == 0) {
-      pixels.setPixelColor(1, pixels.Color(0, 0, 0));    // LED off
-    }
-    pixels.show();
+    // if (strcmp(message, "ON") == 0) {
+    //   pixels.setPixelColor(1, pixels.Color(0, 255, 0));  // LED on
+    // } else if (strcmp(message, "OFF") == 0) {
+    //   pixels.setPixelColor(1, pixels.Color(0, 0, 0));    // LED off
+    // }
+    // pixels.show();
+    led_handle(1, message);
   } else if (strcmp(topic, feedNames[2]) == 0) {
     // Handle fan feed
     if (strcmp(message, "ON") == 0) {
