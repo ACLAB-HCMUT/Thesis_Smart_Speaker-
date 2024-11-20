@@ -4,7 +4,7 @@ from process import *
 from listen import *
 sys.path.append(os.path.dirname(__file__))
 def main():
-	end_keywords_pattern = re.compile(r"\b(hết rồi|hết|kết|kết thúc|cảm ơn|that's all|không|thankss|thank you)\b", re.IGNORECASE)
+	end_keywords_pattern = re.compile(r"\b(hết rồi|hết|kết|kết thúc|cảm ơn|tắt|không|thankss|thank you)\b", re.IGNORECASE)
 	greetings = ["Ơi, Aya đây", "Tui nè, có gì không"]
 	follow_up_questions = [
         "Còn gì nữa không?",
@@ -28,7 +28,9 @@ def main():
 			print(f"End-----------------")
 			break
 		else:
-			process_command(command)
+			end_program=process_command(command)
+			if end_program == None:
+				break
 			follow_up = random.choice(follow_up_questions)
 			print(follow_up)
 			speak(follow_up)

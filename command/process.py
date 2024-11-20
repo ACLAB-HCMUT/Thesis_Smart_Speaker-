@@ -4,6 +4,7 @@ from is_device import *
 from speak import *
 from fine_tuning import *
 from search_agent import *
+from alarm import *
 # from google_calendar import *
 
 def process_command(command):
@@ -88,10 +89,15 @@ def process_command(command):
         tavily_answer=search_and_summarize(command)
         speak(tavily_answer)
         print(f"Final Answer: {search_and_summarize}")
-
+    elif any(keyword in command for keyword in ["báo thức", "nhắc nhở", "alarm", "reminder"]):
+        response = alarm_reminder_action(command)
+        print(response)
+        speak(response)
+        return None
     else:
         print("Gửi yêu cầu đến ChatGPT API...")
         chatgpt_answer = chatgpt_response(command)
         print(f"ChatGPT trả lời: {chatgpt_answer}")
         speak(chatgpt_answer)
+
 
