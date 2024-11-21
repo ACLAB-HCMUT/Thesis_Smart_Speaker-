@@ -14,4 +14,3 @@ def is_device_command(command):
     return bool(re.search(action_pattern, command)) or \
            bool(re.search(room_pattern, command)) or \
            bool(re.search(device_pattern, command))
-

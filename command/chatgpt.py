@@ -6,7 +6,6 @@ load_dotenv()
 API_KEY = os.getenv('API_KEY')
 CHATGPT_API_URL = os.getenv('CHATGPT_API_URL')
 
-
 def chatgpt_response(prompt):
     headers = {
         "Content-Type":"application/json",
