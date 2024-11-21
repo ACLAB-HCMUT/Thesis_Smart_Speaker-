@@ -24,10 +24,6 @@ def search_youtube(query):
 
 
 def play_youtube_video(video_url):
-    print(f"Playing: {video_url}")
-    os.system(f"xdg-open {video_url}")
-if __name__ == "__main__":
-    search_query = "Joji - NITROUS"
-    video_url = search_youtube(search_query)
-    if video_url:
-        play_youtube_video(video_url)
+    autoplay_url = f"{video_url}&autoplay=1"
+    print(f"Playing: {autoplay_url}")
+    os.system(f"xdg-open {autoplay_url}")

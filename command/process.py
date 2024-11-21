@@ -5,6 +5,7 @@ from speak import *
 from fine_tuning import *
 from search_agent import *
 from alarm import *
+from music import *
 # from google_calendar import *
 
 def process_command(command):
@@ -22,6 +23,20 @@ def process_command(command):
         response = f"Đã điều chỉnh âm lượng đến {volume_level}%."
         print(response)
         speak(response)
+    elif any(keyword in command for keyword in ['phát nhạc', 'nhạc']):
+    
+        query = command
+        for keyword in ['phát nhạc', 'mở nhạc']:
+            query = query.replace(keyword, '').strip()
+        if query:
+            video_url = search_youtube(query)
+            if video_url:
+                speak(f"Đang mở bài hát {query}.")
+                play_youtube_video(video_url)
+            else:
+                speak("Không tìm thấy bài hát trên YouTube.")
+        else:
+            speak("Vui lòng nói rõ tên bài hát bạn muốn phát.")
     elif is_device_command(command):
         actions = {
             'bật': 'on',
