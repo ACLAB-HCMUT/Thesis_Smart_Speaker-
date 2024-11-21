@@ -85,11 +85,11 @@ def process_command(command):
         
         print(response)
         speak(response)
-    elif "thời tiết" in command or "tin tức" in command or "sự kiện" in command or "hôm nay" in command:
+    elif any(keyword in command for keyword in ["thời tiết", "tin tức", "sự kiện", "hôm nay"]):
         tavily_answer=search_and_summarize(command)
         speak(tavily_answer)
-        print(f"Final Answer: {search_and_summarize}")
-    elif any(keyword in command for keyword in ["báo thức", "nhắc nhở", "alarm", "reminder"]):
+        print(f"Final Answer: {tavily_answer}")
+    elif any(keyword in command for keyword in ["báo thức", "nhắc nhở","hẹn giờ", "alarm", "reminder"]):
         response = alarm_reminder_action(command)
         print(response)
         speak(response)
@@ -99,5 +99,3 @@ def process_command(command):
         chatgpt_answer = chatgpt_response(command)
         print(f"ChatGPT trả lời: {chatgpt_answer}")
         speak(chatgpt_answer)
-
-
