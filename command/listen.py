@@ -27,4 +27,3 @@ def listen_command(max_attempts=2):
                 return None
     playsound("see_again.mp3")
     return None
-
