@@ -3,9 +3,9 @@ from datetime import datetime, timedelta
 from threading import Timer, Thread
 import subprocess
 from listen import *
-
 alarms = {}
-active_alarm_thread = None  
+active_alarm_thread = None
+
 
 def play_alarm_sound():
     global active_alarm_thread
@@ -15,6 +15,7 @@ def play_alarm_sound():
         process.wait()
     except Exception as e:
         print(f"Lỗi khi phát âm thanh: {e}")
+
 
 def set_alarm(minute, hour, day_of_month, month, comment=None):
     now = datetime.now()
@@ -26,8 +27,8 @@ def set_alarm(minute, hour, day_of_month, month, comment=None):
     delay = (alarm_time - now).total_seconds()
 
     if not comment:
-        comment = alarm_time.strftime("%Y-%m-%d %H:%M")
-    
+        comment = f"Báo thức {len(alarms) + 1}"
+
     def alarm_trigger():
         print(f"Báo thức '{comment}' đang kêu!")
         sound_thread = Thread(target=play_alarm_sound)
@@ -41,21 +42,22 @@ def set_alarm(minute, hour, day_of_month, month, comment=None):
 
     timer = Timer(delay, alarm_trigger)
     timer.start()
-    alarms[comment] = timer  
+    alarms[comment] = timer
     return f"Báo thức đã được đặt cho {alarm_time.strftime('%Y-%m-%d %H:%M')} với tên '{comment}'."
+
 
 def delete_alarm(comment=None):
     global alarms
     if comment is None:  
         for timer in alarms.values():
-            timer.cancel()  
-        alarms.clear()  
+            timer.cancel()
+        alarms.clear()
         return "Tất cả báo thức đã được xóa."
     else:
         comment = comment.strip()
         if comment in alarms:
-            alarms[comment].cancel()  
-            del alarms[comment]  
+            alarms[comment].cancel()
+            del alarms[comment]
             return f"Báo thức '{comment}' đã được xóa."
         else:
             return f"Không tìm thấy báo thức '{comment}'."
@@ -69,6 +71,7 @@ def stop_active_alarm():
         print("Báo thức đã được tắt.")
     else:
         print("Không có báo thức nào đang kêu.")
+
 
 def parse_time_expression(time_expression):
     now = datetime.now()
@@ -87,22 +90,31 @@ def parse_time_expression(time_expression):
         raise ValueError("Thời gian không hợp lệ.")
 
 
+def list_alarms():
+    if not alarms:
+        return "Hiện không có báo thức nào."
+    else:
+        alarm_list = "\n".join([f"- {name}" for name in alarms.keys()])
+        return f"Các báo thức hiện tại:\n{alarm_list}"
+
 
 def alarm_reminder_action(text):
+    if re.search(r'\b(xem|danh sách|hiện tại)\s+báo\s+thức\b', text, re.IGNORECASE):
+        return list_alarms()
+
     set_match = re.search(
-        r'\b(?:đặt|tạo|lên lịch|báo thức|đánh thức tôi|hẹn giờ)\b.*?\b(?:lúc|trong|sau)?\s*(\d{1,2}:\d{2}|\d+\s*(?:phút|giờ))\b',        text, 
-        re.IGNORECASE
+        r'\b(?:đặt|tạo|lên lịch|báo thức|đánh thức tôi|hẹn giờ)\b.*?\b(?:lúc|trong|sau)?\s*(\d{1,2}:\d{2}|\d+\s*(?:phút|giờ))\b',
+        text, re.IGNORECASE
     )
     delete_match = re.search(
-        r'\b(?:xóa|hủy)\s+(?:một\s+)?báo\s+thức\b.*?\b(?:tên|gọi\s+là)?\s*([\w\s:-]+)?', 
-        text, 
-        re.IGNORECASE
+        r'\b(?:xóa|hủy)\s+(?:một\s+)?báo\s+thức\b.*?\b(?:tên|gọi\s+là)?\s*([\w\s:-]+)?',
+        text, re.IGNORECASE
     )
     stop_match = re.search(
-        r'\b(?:tắt|dừng)\s+báo\s+thức\b', 
-        text, 
-        re.IGNORECASE
+        r'\b(?:tắt|dừng)\s+báo\s+thức\b',
+        text, re.IGNORECASE
     )
+
     if set_match:
         time_expression = set_match.group(1)
         minute, hour, day, month = parse_time_expression(time_expression)
