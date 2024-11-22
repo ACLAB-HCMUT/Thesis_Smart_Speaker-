@@ -9,7 +9,7 @@ from music import *
 from notification import *
 from my_calendar import *
 # from google_calendar import *
-from kid_animal import play_sound_animal
+from kid import play_sound_animal,play_story_sound
 def process_command(command):
     if "lịch" in command or "sự kiện" in command:
         print("Đang lấy danh sách sự kiện...")
@@ -63,6 +63,9 @@ def process_command(command):
             speak("Vui lòng nói rõ tên bài hát bạn muốn phát.")
     elif "kêu" in command or ("tiếng" in command and "kêu" in command):
         play_sound_animal(command)
+    elif "kể" in command and ("truyện" in command or "chuyện" in command):
+        print("Đang kể truyện...")
+        play_story_sound()
     elif is_device_command(command):
         actions = {
             'bật': 'on',

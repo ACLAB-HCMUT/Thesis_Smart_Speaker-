@@ -1,10 +1,10 @@
 import os
 from playsound import playsound
 from speak import speak
+import random
 SOUND_FOLDER = "sound/animals"
 
 def play_sound_animal(command):
-    
     animals = {
         "mèo": "cat.mp3",
         "chó": "dog.mp3",
@@ -46,3 +46,19 @@ def play_sound_animal(command):
         response = "Không xác định được con vật nào. Vui lòng thử lại với tên con vật cụ thể."
         print(response)
         speak(response)
+
+def play_story_sound():
+    sound_folder = "./sound/story"  
+    try:
+        sound_files = [file for file in os.listdir(sound_folder) if file.endswith(".mp3") or file.endswith(".wav")]
+        if not sound_files:
+            print("Không tìm thấy tệp âm thanh nào trong thư mục sound.")
+            speak("Không có câu chuyện nào để kể.")
+            return
+        selected_sound = random.choice(sound_files)
+        sound_path = os.path.join(sound_folder, selected_sound)
+        print(f"Đang phát tệp âm thanh: {selected_sound}")
+        playsound(sound_path)  
+    except Exception as e:
+        print(f"Lỗi khi phát âm thanh: {e}")
+        speak("Đã xảy ra lỗi khi kể chuyện.")
