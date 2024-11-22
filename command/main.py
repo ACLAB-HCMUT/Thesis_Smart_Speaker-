@@ -9,7 +9,7 @@ from notification import monitor_temperature, monitor_moisture
 
 def main():
 	end_keywords_pattern = re.compile(r"\b(hết rồi|hết|kết|kết thúc|cảm ơn|tắt|không|thanks|thank you)\b", re.IGNORECASE)
-	greetings = ["Ơi, Aya đây", "Tui nè, có gì không"]
+	greetings = ["Em nghe", "Dạ", "Có em", "Vâng, em nghe"]
 	follow_up_questions = [
         "Còn gì nữa không?",
         "Bạn cần gì thêm không?",
