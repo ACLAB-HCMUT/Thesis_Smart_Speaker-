@@ -3,20 +3,17 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from speak import speak
+
 load_dotenv()
 AIO_USERNAME = os.getenv("AIO_USERNAME")
 AIO_KEY = os.getenv("AIO_KEY")
 aio = Client(AIO_USERNAME, AIO_KEY)
-
 MOISTURE_FEED = "mois"
 TEMPERATURE_FEED = "temp"
 TEMPERATURE_MIN = 22  
 TEMPERATURE_MAX = 26  
-
-
 HUMIDITY_MIN = 40  
 HUMIDITY_MAX = 60  
-
 last_moisture_notification_time = None
 last_temperature_notification_time = None
 notification_cooldown = timedelta(minutes=30)
@@ -83,7 +80,6 @@ def monitor_temperature():
     if temperature_value is None:
         return
 
-    # Kiểm tra nhiệt độ ngoài phạm vi
     if temperature_value < TEMPERATURE_MIN:
         current_time = datetime.now()
         if not last_temperature_notification_time or (current_time - last_temperature_notification_time > notification_cooldown):
@@ -97,10 +93,3 @@ def monitor_temperature():
     else:
         print(f"Nhiệt độ phòng ổn định: {temperature_value}°C.")
         last_temperature_notification_time = None
-
-# set_sensor_status(MOISTURE_FEED, True)
-# set_sensor_status(TEMPERATURE_FEED, True)
-
-    
-monitor_moisture()
-# monitor_temperature()
