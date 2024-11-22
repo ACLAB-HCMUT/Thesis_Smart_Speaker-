@@ -1,6 +1,7 @@
 import os
 import requests
 import json
+import re
 from dotenv import load_dotenv
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
@@ -30,6 +31,12 @@ def normalize_math_expression(expression):
     expression = expression.replace("e mũ", "e^")
     expression = expression.replace("dấu ngoặc mở", "(")
     expression = expression.replace("dấu ngoặc đóng", ")")
+    expression = expression.replace("chuyển vị", "transpose")
+    expression = expression.replace("định thức", "det")
+    expression = expression.replace("logarit tự nhiên", "ln")
+    expression = expression.replace("lập phương", "^3")
+    expression = expression.replace("căn bậc ba", "cbrt")
+    expression = re.sub(r"căn bậc (\d+)", r"nthroot(\1,", expression)
     expression = " ".join(expression.split())  
     return expression
 
