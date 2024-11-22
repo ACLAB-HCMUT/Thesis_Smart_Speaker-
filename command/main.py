@@ -17,8 +17,8 @@ def main():
     ]
 
 	playsound("sound/welcome.mp3")
-	monitor_temperature()
-	monitor_moisture()
+	# monitor_temperature()
+	# monitor_moisture()
 	greeting = random.choice(greetings)
 	speak(greeting)
 	while True:
