@@ -11,10 +11,21 @@ def play_sound_animal(command):
         "gà": "chicken.mp3",
         "vịt": "duck.mp3",
         "bò": "cow.mp3",
-        "ngựa": "horse.mp3"
+        "ngựa": "horse.mp3",
+        "cá": "alligator.mp3",
+        "dế": "crickets.mp3",
+        "quạ": "crow.mp3",
+        "ong": "bee.mp3",
+        "voi": "elephant.mp3",
+        "cú": "owl.mp3",
+        "sử tử": "lion.mp3",
+        "hổ": "tiger.mp3",
+        "sói": "wolf.mp3",
+        "heo": "pig.mp3",
+        "cừu": "lamb.mp3",
+        "dê": "lamb.mp3",
     }
 
-   
     animal_found = None
     for animal in animals.keys():
         if animal in command:
