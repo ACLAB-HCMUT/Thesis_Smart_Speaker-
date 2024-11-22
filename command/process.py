@@ -6,10 +6,22 @@ from fine_tuning import *
 from search_agent import *
 from alarm import *
 from music import *
+from notification import *
 # from google_calendar import *
 
 def process_command(command):
-    if  'âm lượng' in command or 'loa' in command:
+    if "bật cảm biến" in command or "tắt cảm biến" in command:
+        if "độ ẩm" in command:
+            if "bật" in command:
+                set_sensor_status(MOISTURE_FEED, True)
+            elif "tắt" in command:
+                set_sensor_status(MOISTURE_FEED, False)
+        elif "nhiệt độ" in command:
+            if "bật" in command:
+                set_sensor_status(TEMPERATURE_FEED, True)
+            elif "tắt" in command:
+                set_sensor_status(TEMPERATURE_FEED, False)
+    elif  'âm lượng' in command or 'loa' in command:
         volume_level = re.search(r'\d+', command)
         if volume_level:
             volume_level = int(volume_level.group())

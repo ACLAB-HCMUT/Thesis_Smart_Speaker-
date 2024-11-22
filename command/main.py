@@ -2,6 +2,8 @@ import random
 import sys
 from process import *
 from listen import *
+from notification import monitor_temperature, monitor_moisture
+
 sys.path.append(os.path.dirname(__file__))
 def main():
 	end_keywords_pattern = re.compile(r"\b(hết rồi|hết|kết|kết thúc|cảm ơn|tắt|không|thanks|thank you)\b", re.IGNORECASE)
@@ -15,6 +17,8 @@ def main():
     ]
 
 	playsound("sound/welcome.mp3")
+	monitor_temperature()
+	monitor_moisture()
 	greeting = random.choice(greetings)
 	speak(greeting)
 	while True:
