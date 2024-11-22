@@ -1,10 +1,12 @@
 import random
 import sys
+import os
+sys.path.append(os.path.dirname(__file__))
 from process import *
 from listen import *
 from notification import monitor_temperature, monitor_moisture
 
-sys.path.append(os.path.dirname(__file__))
+
 def main():
 	end_keywords_pattern = re.compile(r"\b(hết rồi|hết|kết|kết thúc|cảm ơn|tắt|không|thanks|thank you)\b", re.IGNORECASE)
 	greetings = ["Ơi, Aya đây", "Tui nè, có gì không"]
