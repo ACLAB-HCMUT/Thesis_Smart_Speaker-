@@ -90,7 +90,7 @@ def process_command(command):
             room = room_match.group(0)
             device = device_match.group(0)
             action = actions[action_match.group(0).lower()]
-            response=f"Đang {action_match.group(0).lower()} {device} ở {room}"
+            response=f"Đã {action_match.group(0).lower()} {device} ở {room}"
             feed_name=devices[device]
             control_device(action,feed_name)  
       
