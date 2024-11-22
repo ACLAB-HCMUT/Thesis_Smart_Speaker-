@@ -7,10 +7,22 @@ from search_agent import *
 from alarm import *
 from music import *
 from notification import *
+from my_calendar import *
 # from google_calendar import *
 
 def process_command(command):
-    if "bật cảm biến" in command or "tắt cảm biến" in command:
+    if "lịch" in command or "sự kiện" in command:
+        print("Đang lấy danh sách sự kiện...")
+        speak(get_calendar_events())
+    elif "thêm sự kiện" in command:
+        print("Đang tạo sự kiện mới...")
+        summary = "Họp nhóm dự án"
+        location = "Hồ Chí Minh, Việt Nam"
+        description = "Thảo luận tiến độ dự án."
+        start_time = "2024-11-24T10:00:00+07:00"
+        end_time = "2024-11-24T11:00:00+07:00"
+        add_event(summary, location, description, start_time, end_time)
+    elif "bật cảm biến" in command or "tắt cảm biến" in command:
         if "độ ẩm" in command:
             if "bật" in command:
                 set_sensor_status(MOISTURE_FEED, True)
@@ -112,7 +124,7 @@ def process_command(command):
         
         print(response)
         speak(response)
-    elif any(keyword in command for keyword in ["thời tiết", "tin tức", "sự kiện", "hôm nay"]):
+    elif any(keyword in command for keyword in ["thời tiết", "tin tức", "hôm nay"]):
         tavily_answer=search_and_summarize(command)
         speak(tavily_answer)
         print(f"Final Answer: {tavily_answer}")
