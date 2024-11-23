@@ -12,7 +12,7 @@ from listen import *
 from kid import play_sound_animal,play_story_sound
 
 def process_command(command):
-    if "lấy lịchn" in command:
+    if "lấy lịch" in command:
         print("Đang lấy danh sách sự kiện...")
         speak(get_calendar_events())
     elif "thêm lịch" in command:
