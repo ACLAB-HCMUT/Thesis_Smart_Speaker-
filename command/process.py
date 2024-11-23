@@ -10,7 +10,7 @@ from notification import *
 from my_calendar import *
 from listen import *
 from kid import play_sound_animal,play_story_sound
-
+from direction import *
 def process_command(command):
     if "lấy lịch" in command:
         print("Đang lấy danh sách sự kiện...")
@@ -131,6 +131,21 @@ def process_command(command):
         
         print(response)
         speak(response)
+    elif "hỏi đường" in command or "chỉ đường" in command:
+        pattern = r"từ (.+) đến (.+)"
+        match = re.search(pattern, command)
+        if match:
+            origin_address = match.group(1).strip()
+            destination_address = match.group(2).strip()
+            print(f"Đang tìm đường từ '{origin_address}' đến '{destination_address}'...")
+            
+            result = get_directions(origin_address, destination_address)
+            print(result)
+            speak(result)
+        else:
+            response = "Vui lòng nói rõ địa chỉ gốc và địa chỉ đích, ví dụ: chỉ đường từ Hồ Gươm đến Lăng Bác."
+            print(response)
+            speak(response)
     elif any(keyword in command for keyword in ["thời tiết", "tin tức", "hôm nay"]):
         tavily_answer=search_and_summarize(command)
         speak(tavily_answer)
