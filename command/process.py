@@ -8,20 +8,22 @@ from alarm import *
 from music import *
 from notification import *
 from my_calendar import *
-# from google_calendar import *
+from listen import *
 from kid import play_sound_animal,play_story_sound
+
 def process_command(command):
-    if "lịch" in command or "sự kiện" in command:
+    if "lấy sự kiện" in command:
         print("Đang lấy danh sách sự kiện...")
         speak(get_calendar_events())
     elif "thêm sự kiện" in command:
-        print("Đang tạo sự kiện mới...")
-        summary = "Họp nhóm dự án"
-        location = "Hồ Chí Minh, Việt Nam"
-        description = "Thảo luận tiến độ dự án."
-        start_time = "2024-11-24T10:00:00+07:00"
-        end_time = "2024-11-24T11:00:00+07:00"
-        add_event(summary, location, description, start_time, end_time)
+        input_for_add_event() # add_event inside here
+        # print("Đang tạo sự kiện mới...")
+        # summary = "Họp nhóm dự án"
+        # location = "Hồ Chí Minh, Việt Nam"
+        # description = "Thảo luận tiến độ dự án."
+        # start_time = "2024-11-24T10:00:00+07:00"
+        # end_time = "2024-11-24T11:00:00+07:00"
+        # add_event(summary, location, description, start_time, end_time)
     elif "bật cảm biến" in command or "tắt cảm biến" in command:
         if "độ ẩm" in command:
             if "bật" in command:

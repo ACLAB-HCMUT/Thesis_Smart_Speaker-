@@ -6,7 +6,6 @@ from process import *
 from listen import *
 from notification import monitor_temperature, monitor_moisture
 
-
 def main():
 	end_keywords_pattern = re.compile(r"\b(hết rồi|hết|kết|kết thúc|cảm ơn|tắt|không|thanks|thank you)\b", re.IGNORECASE)
 	greetings = ["Em nghe", "Dạ", "Có em", "Vâng, em nghe"]
@@ -18,7 +17,7 @@ def main():
         "Có cần tôi làm gì nữa không?"
     ]
 
-	playsound("sound/welcome.mp3")
+	playsound("../command/sound/welcome.mp3")
 	# monitor_temperature()
 	# monitor_moisture()
 	greeting = random.choice(greetings)
@@ -30,7 +29,7 @@ def main():
 			break
 		command= command.lower()
 		if end_keywords_pattern.search(command):
-			playsound("sound/end_command.mp3")
+			playsound("../command/sound/end_command.mp3")
 			print(f"End-----------------")
 			break
 		else:
