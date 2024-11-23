@@ -8,20 +8,20 @@ from alarm import *
 from music import *
 from notification import *
 from my_calendar import *
-# from google_calendar import *
-from kid import play_sound_animal,play_story_sound
+from listen import *
+
 def process_command(command):
-    if "lịch" in command or "sự kiện" in command:
-        print("Đang lấy danh sách sự kiện...")
-        speak(get_calendar_events())
-    elif "thêm sự kiện" in command:
-        print("Đang tạo sự kiện mới...")
-        summary = "Họp nhóm dự án"
-        location = "Hồ Chí Minh, Việt Nam"
-        description = "Thảo luận tiến độ dự án."
-        start_time = "2024-11-24T10:00:00+07:00"
-        end_time = "2024-11-24T11:00:00+07:00"
-        add_event(summary, location, description, start_time, end_time)
+    # if "lịch" in command or "sự kiện" in command:
+    #     print("Đang lấy danh sách sự kiện...")
+    #     speak(get_calendar_events())
+    if "tạo sự kiện" in command:
+        input_for_add_event() # add_event inside here
+        # print("Đang tạo sự kiện mới...")
+        # summary = "Họp nhóm dự án"
+        # location = "Hồ Chí Minh, Việt Nam"
+        # description = "Thảo luận tiến độ dự án."
+        # start_time = "2024-11-24T10:00:00+07:00"
+        # end_time = "2024-11-24T11:00:00+07:00"
     elif "bật cảm biến" in command or "tắt cảm biến" in command:
         if "độ ẩm" in command:
             if "bật" in command:
@@ -61,11 +61,6 @@ def process_command(command):
                 speak("Không tìm thấy bài hát trên YouTube.")
         else:
             speak("Vui lòng nói rõ tên bài hát bạn muốn phát.")
-    elif "kêu" in command or ("tiếng" in command and "kêu" in command):
-        play_sound_animal(command)
-    elif "kể" in command and ("truyện" in command or "chuyện" in command):
-        print("Đang kể truyện...")
-        play_story_sound()
     elif is_device_command(command):
         actions = {
             'bật': 'on',
@@ -95,7 +90,7 @@ def process_command(command):
             room = room_match.group(0)
             device = device_match.group(0)
             action = actions[action_match.group(0).lower()]
-            response=f"Đã {action_match.group(0).lower()} {device} ở {room}"
+            response=f"Đang {action_match.group(0).lower()} {device} ở {room}"
             feed_name=devices[device]
             control_device(action,feed_name)  
       
