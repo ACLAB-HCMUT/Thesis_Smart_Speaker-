@@ -10,7 +10,7 @@ active_alarm_thread = None
 def play_alarm_sound():
     global active_alarm_thread
     try:
-        process = subprocess.Popen(["aplay", "sound/alarm.wav"])
+        process = subprocess.Popen(["aplay", "../command/sound/alarm.wav"])
         active_alarm_thread = process
         process.wait()
     except Exception as e:
