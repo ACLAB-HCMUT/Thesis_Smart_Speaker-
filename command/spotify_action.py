@@ -12,7 +12,8 @@ logging.basicConfig(level=logging.INFO)
 
 client_id = os.getenv('client_id')
 client_secret = os.getenv('client_secret')
-redirect_uri = "http://127.0.0.1:8080/callback"  
+redirect_uri =  os.getenv('redirect_uri')
+
 
 
 def create_auth_url():
@@ -42,7 +43,7 @@ async def get_access_token(auth_code):
                 return token_data.get("access_token")
             else:
                 error_text = await response.text()
-                logger.error(f"Error obtaining access token: {error_text}")
+                print(f"Error obtaining access token: {error_text}")
                 return None
 
 

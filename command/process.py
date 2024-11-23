@@ -1,70 +1,39 @@
-import re
-from gtts import gTTS
 from control import *
 from chatgpt import *
-from google_calendar import *
-from playsound import playsound
-import speech_recognition as sr
-from langdetect import detect
-
-# def speak(text):
-#     tts = gTTS(text=text, lang='vi') # english: lang='en', vietnamese: lang='vi'
-#     tts.save("command.mp3")
-#     # Adjust the speed of the mp3 file
-#     audio = AudioSegment.from_file("command.mp3")
-#     # Speed up by 1.5x
-#     audio = audio.speedup(playback_speed=1.35)
-#     audio.export("command.mp3", format="mp3")
-#     audio_segment = AudioSegment.from_file("command.mp3")  
-#     pydub_play(silence + audio_segment)
-
-
-def speak(text):
-    tts = gTTS(text=text, lang='vi')
-    tts.save("./sound/command.mp3")
-    # 18/11/2024 - datph - Replace pydub by playsound to play command.mp3
-    # audio = AudioSegment.from_file("command.mp3")
-    # audio = audio.speedup(playback_speed=1.35)
-    # audio.export("command.mp3", format="mp3")
-    # audio_segment = AudioSegment.from_file("command.mp3")  
-    # pydub_play(silence + audio_segment)
-    playsound("./sound/command.mp3")
-
-def listen_command():
-    recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        print("Đang lắng nghe...")
-        audio = recognizer.listen(source, timeout=5)
-        try:
-            command = recognizer.recognize_google(audio, language='vi-VN')
-            print(command)
-            return command
-        except sr.UnknownValueError:
-            print("Không thể nhận diện được giọng nói.")
-            speak("Bạn nói gì tôi nghe không rõ.")
-            return None
-        except sr.RequestError as e:
-            print(f"Không thể yêu cầu dịch vụ Google Speech Recognition; {e}")
-            return None
-
-def is_device_command(command):
-    actions = ['bật', 'mở', 'tắt', 'đóng', 'tăng', 'giảm', 'điều chỉnh', 'chỉnh']
-    rooms = ['phòng khách', 'phòng ngủ', 'phòng bếp', 'phòng làm việc']
-    devices = ['đèn', 'cửa', 'máy lạnh']
-    
-    # regex
-    action_pattern = r'\b(' + '|'.join(actions) + r')\b'
-    room_pattern = r'\b(' + '|'.join(rooms) + r')\b'
-    device_pattern = r'\b(' + '|'.join(devices) + r')\b'
-    
-    
-    return bool(re.search(action_pattern, command)) or \
-           bool(re.search(room_pattern, command)) or \
-           bool(re.search(device_pattern, command))
-
+from is_device import *
+from speak import *
+from fine_tuning import *
+from search_agent import *
+from alarm import *
+from music import *
+from notification import *
+from my_calendar import *
+from listen import *
 
 def process_command(command):
-    if  'âm lượng' in command or 'loa' in command:
+    # if "lịch" in command or "sự kiện" in command:
+    #     print("Đang lấy danh sách sự kiện...")
+    #     speak(get_calendar_events())
+    if "tạo sự kiện" in command:
+        input_for_add_event() # add_event inside here
+        # print("Đang tạo sự kiện mới...")
+        # summary = "Họp nhóm dự án"
+        # location = "Hồ Chí Minh, Việt Nam"
+        # description = "Thảo luận tiến độ dự án."
+        # start_time = "2024-11-24T10:00:00+07:00"
+        # end_time = "2024-11-24T11:00:00+07:00"
+    elif "bật cảm biến" in command or "tắt cảm biến" in command:
+        if "độ ẩm" in command:
+            if "bật" in command:
+                set_sensor_status(MOISTURE_FEED, True)
+            elif "tắt" in command:
+                set_sensor_status(MOISTURE_FEED, False)
+        elif "nhiệt độ" in command:
+            if "bật" in command:
+                set_sensor_status(TEMPERATURE_FEED, True)
+            elif "tắt" in command:
+                set_sensor_status(TEMPERATURE_FEED, False)
+    elif  'âm lượng' in command or 'loa' in command:
         volume_level = re.search(r'\d+', command)
         if volume_level:
             volume_level = int(volume_level.group())
@@ -78,6 +47,20 @@ def process_command(command):
         response = f"Đã điều chỉnh âm lượng đến {volume_level}%."
         print(response)
         speak(response)
+    elif any(keyword in command for keyword in ['phát nhạc', 'nhạc']):
+    
+        query = command
+        for keyword in ['phát nhạc', 'mở nhạc']:
+            query = query.replace(keyword, '').strip()
+        if query:
+            video_url = search_youtube(query)
+            if video_url:
+                speak(f"Đang mở bài hát {query}.")
+                play_youtube_video(video_url)
+            else:
+                speak("Không tìm thấy bài hát trên YouTube.")
+        else:
+            speak("Vui lòng nói rõ tên bài hát bạn muốn phát.")
     elif is_device_command(command):
         actions = {
             'bật': 'on',
@@ -141,13 +124,17 @@ def process_command(command):
         
         print(response)
         speak(response)
-    # 18/11/2024 - datph - add 1 condition branch add event for calendar feature
-    elif 'tạo sự kiện lịch' in command or 'thêm sự kiện lịch' in command:
-        process_of_add_event()
-
+    elif any(keyword in command for keyword in ["thời tiết", "tin tức", "hôm nay"]):
+        tavily_answer=search_and_summarize(command)
+        speak(tavily_answer)
+        print(f"Final Answer: {tavily_answer}")
+    elif any(keyword in command for keyword in ["báo thức", "nhắc nhở","hẹn giờ", "alarm", "reminder"]):
+        response = alarm_reminder_action(command)
+        print(response)
+        speak(response)
+        return None
     else:
         print("Gửi yêu cầu đến ChatGPT API...")
         chatgpt_answer = chatgpt_response(command)
         print(f"ChatGPT trả lời: {chatgpt_answer}")
         speak(chatgpt_answer)
-

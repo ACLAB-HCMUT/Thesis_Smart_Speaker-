@@ -4,11 +4,13 @@ import os
 
 sys.path.append(os.path.dirname(__file__))
 
+from notification import monitor_temperature, monitor_moisture
 from process import *
+from listen import *
 
 def main():
-	end_keywords = ["hết rồi", "hết", "kết thúc", "cảm ơn","that's all","thankss","thank you"]
-	greetings = ["Ơi, Aya đây", "Tui nè, có gì không", "Hở, có chuyện gì không"]
+	end_keywords_pattern = re.compile(r"\b(hết rồi|hết|kết|kết thúc|cảm ơn|tắt|không|thanks|thank you)\b", re.IGNORECASE)
+	greetings = ["Ơi, Aya đây", "Tui nè, có gì không"]
 	follow_up_questions = [
         "Còn gì nữa không?",
         "Bạn cần gì thêm không?",
@@ -17,27 +19,25 @@ def main():
         "Có cần tôi làm gì nữa không?"
     ]
 
-	playsound("./sound/welcome.mp3")
-	# 18/11/2024 - datph - Replace greeting by playsound welcome.mp3 for respone user when saying:"Aya"
-	# greeting = random.choice(greetings)
-	# speak(greeting)
+	playsound("../command/sound/welcome.mp3")
+	# monitor_temperature()
+	# monitor_moisture()
+	greeting = random.choice(greetings)
+	speak(greeting)
 	while True:
 		command = listen_command()
-		# command = "Tôn đức thắng là ai"
-		# command ="bật đèn phòng khách cho tôi"
-		# command ="bật quạt phòng khách cho tôi"
-		# command ="Tăng âm lượng lên 80%"
 		if command is None:
-			print("ket thuc do khong nhan dien duoc giong noi")
+			print("Terminated due to failure to recognize speech.")
 			break
 		command= command.lower()
-		if any(keyword in command for keyword in end_keywords):
-			speak("Không có chi")
-			print(f"ket chuc chuong trinh")
+		if end_keywords_pattern.search(command):
+			playsound("../command/sound/end_command.mp3")
+			print(f"End-----------------")
 			break
 		else:
-			process_command(command)
-			# break
+			end_program=process_command(command)
+			if end_program == None:
+				break
 			follow_up = random.choice(follow_up_questions)
 			print(follow_up)
 			speak(follow_up)
