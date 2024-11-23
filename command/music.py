@@ -1,29 +1,67 @@
+from yt_dlp import YoutubeDL
 from googleapiclient.discovery import build
 import os
 from dotenv import load_dotenv
+import subprocess
 load_dotenv()
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
 
 def search_youtube(query):
-    request = youtube.search().list(
-        q=query,
-        part="snippet",
-        type="video",
-        maxResults=1
-    )
-    response = request.execute()
-    if response["items"]:
-        video_id = response["items"][0]["id"]["videoId"]
-        video_title = response["items"][0]["snippet"]["title"]
-        print(f"Found video: {video_title}")
-        return f"https://www.youtube.com/watch?v={video_id}"
-    else:
-        print("No results found.")
+    try:
+        request = youtube.search().list(
+            q=query,
+            part="snippet",
+            type="video",
+            maxResults=1
+        )
+        response = request.execute()
+        if response["items"]:
+            video_id = response["items"][0]["id"]["videoId"]
+            video_title = response["items"][0]["snippet"]["title"]
+            print(f"Tìm thấy video: {video_title}")
+            return f"https://www.youtube.com/watch?v={video_id}"
+        else:
+            print("Không tìm thấy kết quả.")
+            return None
+    except Exception as e:
+        print("Lỗi khi tìm kiếm YouTube:", e)
         return None
 
+music_process = None
 
-def play_youtube_video(video_url):
-    autoplay_url = f"{video_url}&autoplay=1"
-    print(f"Playing: {autoplay_url}")
-    os.system(f"xdg-open {autoplay_url}")
+def download_and_play_youtube_audio(video_url):
+    global music_process
+    try:
+        options = {
+            'format': 'bestaudio/best',  
+            'outtmpl': 'audio.%(ext)s', 
+            'noplaylist': True,          
+        }
+        
+        with YoutubeDL(options) as ydl:
+            info = ydl.extract_info(video_url, download=True)
+            audio_file = ydl.prepare_filename(info)
+        
+        
+        print("Đang phát nhạc... Nhập 'dừng nhạc' để dừng.")
+        music_process = subprocess.Popen(["ffplay", "-nodisp", "-autoexit", audio_file])
+
+        
+        music_process.wait()
+
+     
+        os.remove(audio_file)
+        print("Hoàn tất!")
+    except Exception as e:
+        print("Đã xảy ra lỗi:", e)
+        music_process = None
+
+def stop_music():
+    global music_process
+    if music_process and music_process.poll() is None:  
+        music_process.terminate()
+        print("Nhạc đã được dừng.")
+        music_process = None
+    else:
+        print("Không có nhạc đang phát.")
