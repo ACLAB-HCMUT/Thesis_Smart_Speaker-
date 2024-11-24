@@ -2,7 +2,7 @@ import os
 from playsound import playsound
 from speak import speak
 import random
-SOUND_FOLDER = "../command/sound/animals"
+SOUND_FOLDER = "./command/sound/animals"
 
 def play_sound_animal(command):
     animals = {
@@ -48,7 +48,7 @@ def play_sound_animal(command):
         speak(response)
 
 def play_story_sound():
-    sound_folder = "../command/sound/story"  
+    sound_folder = "./command/sound/story"  
     try:
         sound_files = [file for file in os.listdir(sound_folder) if file.endswith(".mp3") or file.endswith(".wav")]
         if not sound_files:

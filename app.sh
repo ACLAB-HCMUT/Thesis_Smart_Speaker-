@@ -1,7 +1,7 @@
 #! /bin/bash
 
-	cd speed_reg-v23
+cd Desktop/Thesis_Smart_Speaker
 while true; do
-	./build/Smart_Speaker
+	./speed_reg-v26/build/Smart_Speaker
 	sleep 1
 done
