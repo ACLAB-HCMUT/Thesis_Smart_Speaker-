@@ -52,10 +52,10 @@ def process_command(command):
         speak(response)
     elif any(keyword in command for keyword in ['dừng nhạc', 'tắt nhạc']):
         stop_music()
-    elif any(keyword in command for keyword in ['phát nhạc', 'nhạc']):
+    elif any(keyword in command for keyword in ['phát nhạc', 'nhạc', 'mở bài']):
     
         query = command
-        for keyword in ['phát nhạc', 'mở nhạc']:
+        for keyword in ['phát nhạc', 'mở nhạc','mở bài']:
             query = query.replace(keyword, '').strip()
         if query:
             video_url = search_youtube(query)
