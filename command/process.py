@@ -52,10 +52,10 @@ def process_command(command):
         speak(response)
     elif any(keyword in command for keyword in ['dừng nhạc', 'tắt nhạc']):
         stop_music()
-    elif any(keyword in command for keyword in ['phát nhạc', 'nhạc']):
+    elif any(keyword in command for keyword in ['phát nhạc', 'nhạc','mở bài']):
     
         query = command
-        for keyword in ['phát nhạc', 'mở nhạc']:
+        for keyword in ['phát nhạc', 'mở nhạc','mở bài']:
             query = query.replace(keyword, '').strip()
         if query:
             video_url = search_youtube(query)
@@ -149,7 +149,7 @@ def process_command(command):
             response = "Vui lòng nói rõ địa chỉ gốc và địa chỉ đích, ví dụ: chỉ đường từ Hồ Gươm đến Lăng Bác."
             print(response)
             speak(response)
-    elif any(keyword in command for keyword in ["thời tiết", "tin tức", "hôm nay"]):
+    elif any(keyword in command for keyword in ["thời tiết", "tin tức", "hôm nay", "hiện nay"]):
         tavily_answer=search_and_summarize(command)
         speak(tavily_answer)
         print(f"Final Answer: {tavily_answer}")
