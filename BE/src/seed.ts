@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import Device from './models/devices.model'; 
 
-const DB_ENDPOINT = 'mongodb+srv://locphan2113971:choancuc123@cluster0.fll8b.mongodb.net/mydatabase?retryWrites=true&w=majority&appName=Cluster0';
 
 // Kết nối tới MongoDB
 mongoose.connect(DB_ENDPOINT)
