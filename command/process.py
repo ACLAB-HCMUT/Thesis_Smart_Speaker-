@@ -10,8 +10,8 @@ from notification import *
 from my_calendar import get_calendar_events,input_for_add_event
 from ask_time import get_current_time
 from kid import play_sound_animal,play_story_sound
-from direction import *
-
+from direction import get_directions
+from math_calculation import math_calculation
 def process_command(command):
     global music_process
     global default_voice
@@ -168,6 +168,14 @@ def process_command(command):
         print(response)
         speak(response)
         return 1
+    elif any(keyword in command for keyword in ["căn","giai thừa","đạo hàm","tích phân","bình phương", "phép tính", "chia", "nhân", "cộng", "trừ"]):
+        try:
+            result = math_calculation(command)
+            print(f"Kết quả toán học: {result}")
+            speak(result)
+        except Exception as e:
+            print(f"Lỗi xử lý toán học: {e}")
+            speak("Xin lỗi, tôi không thể xử lý phép toán này.")
     else:
         print("Gửi yêu cầu đến ChatGPT API...")
         chatgpt_answer = chatgpt_response(command)
