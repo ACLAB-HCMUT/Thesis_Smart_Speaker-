@@ -29,7 +29,7 @@ def main():
 			break
 		command= command.lower()
 		if end_keywords_pattern.search(command):
-			playsound("../command/sound/end_command.mp3")
+			speak("Không có chi ạ.")
 			print(f"End-----------------")
 			break
 		else:
