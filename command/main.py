@@ -34,7 +34,7 @@ def main():
 			break
 		else:
 			end_program=process_command(command)
-			if end_program == None:
+			if end_program == 1:
 				break
 			follow_up = random.choice(follow_up_questions)
 			print(follow_up)

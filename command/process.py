@@ -11,9 +11,17 @@ from my_calendar import *
 from listen import *
 from kid import play_sound_animal,play_story_sound
 from direction import *
+
 def process_command(command):
     global music_process
-    if "lấy lịch" in command:
+    global default_voice
+    if "giọng nữ" in command:
+        set_default_voice("female")
+    elif "giọng nam" in command:
+        set_default_voice("male")
+    elif "giọng mặc định" in command:
+        set_default_voice("default")
+    elif "lấy lịch" in command:
         print("Đang lấy danh sách sự kiện...")
         speak(get_calendar_events())
     elif "thêm lịch" in command:
@@ -134,7 +142,7 @@ def process_command(command):
         
         print(response)
         speak(response)
-    elif "hỏi đường" in command or "chỉ đường" in command:
+    elif any(keyword in command for keyword in ["hỏi đường", "chỉ đường", "hướng dẫn đường"]):
         pattern = r"từ (.+) đến (.+)"
         match = re.search(pattern, command)
         if match:
@@ -149,7 +157,7 @@ def process_command(command):
             response = "Vui lòng nói rõ địa chỉ gốc và địa chỉ đích, ví dụ: chỉ đường từ Hồ Gươm đến Lăng Bác."
             print(response)
             speak(response)
-    elif any(keyword in command for keyword in ["thời tiết", "tin tức", "hôm nay", "hiện nay"]):
+    elif any(keyword in command for keyword in ["thời tiết", "tin tức", "hôm nay", "hiện nay", "thời sự"]):
         tavily_answer=search_and_summarize(command)
         speak(tavily_answer)
         print(f"Final Answer: {tavily_answer}")
@@ -157,7 +165,7 @@ def process_command(command):
         response = alarm_reminder_action(command)
         print(response)
         speak(response)
-        return None
+        return 1
     else:
         print("Gửi yêu cầu đến ChatGPT API...")
         chatgpt_answer = chatgpt_response(command)

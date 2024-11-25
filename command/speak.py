@@ -3,17 +3,18 @@ from playsound import playsound
 from pydub import AudioSegment
 from google.cloud import texttospeech
 import os
-def speak(text):
-    try:
-        tts = gTTS(text=text, lang='vi')
-        tts.save("./command/sound/command.mp3")
-        audio = AudioSegment.from_file("./command/sound/command.mp3")
-        audio = audio.speedup(playback_speed=1.25)
-        audio.export("./command/sound/command.mp3", format="mp3")
-        playsound("./command/sound/command.mp3")
-    except Exception as e:
-        print(f"Lỗi: {e}")
+# def speak(text):
+#     try:
+#         tts = gTTS(text=text, lang='vi')
+#         tts.save("sound/command.mp3")
+#         audio = AudioSegment.from_file("sound/command.mp3")
+#         audio = audio.speedup(playback_speed=1.25)
+#         audio.export("sound/command.mp3", format="mp3")
+#         playsound("sound/command.mp3")
+#     except Exception as e:
+#         print(f"Lỗi: {e}")
 
+default_voice="default"
 def load_google_credentials():
    
     credentials_path = os.path.join(os.getcwd(), "my_key.json")
@@ -75,14 +76,43 @@ def speak_male(text):
         output_file = "sound/output.mp3"
         with open(output_file, "wb") as out:
             out.write(response.audio_content)
-        print(f"Giọng nói đã được lưu vào file: {output_file}")
+        
 
         playsound(output_file)
 
     except Exception as e:
         print(f"Đã xảy ra lỗi: {e}")
-
-
+def set_default_voice(voice):
+    global default_voice
+    actions = {
+        "male": ("Đã chuyển sang giọng nam.", "Đã chuyển sang giọng nam."),
+        "female": ("Đã chuyển sang giọng nữ.", "Đã chuyển sang giọng nữ."),
+        "default": ("Đã chuyển sang giọng mặc định.", "Đã chuyển sang giọng mặc định."),
+    }
+    if voice in actions:
+        default_voice = voice
+        message, speak_text = actions[voice]  
+        print(message)
+        speak(speak_text) 
+    else:
+        print("Giọng không hợp lệ. Vui lòng chọn 'male', 'female', hoặc 'default'.")
+def speak(text):
+    global default_voice 
+    
+    try:
+        if default_voice == "male":
+            speak_male(text)
+        elif default_voice == "female":
+            speak_female(text)
+        else:  
+            tts = gTTS(text=text, lang='vi')
+            tts.save("sound/command.mp3")
+            audio = AudioSegment.from_file("sound/command.mp3")
+            # audio = audio.speedup(playback_speed=1.25)
+            # audio.export("sound/command.mp3", format="mp3")
+            playsound("sound/command.mp3")
+    except Exception as e:
+        print(f"Lỗi: {e}")
 # Ngôn ngữ: ['vi-VN']
 # SSML Gender: FEMALE
 # Tần số mẫu: 24000
