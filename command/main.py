@@ -3,18 +3,14 @@ import sys
 import os
 sys.path.append(os.path.dirname(__file__))
 from process import *
-from listen import *
 from notification import monitor_temperature, monitor_moisture
 
 def main():
 	end_keywords_pattern = re.compile(r"\b(hết rồi|hết|kết|kết thúc|cảm ơn|thanks|thank you)\b", re.IGNORECASE)
 	greetings = ["Em nghe", "Dạ", "Có em", "Vâng, em nghe"]
 	follow_up_questions = [
-        "Còn gì nữa không?",
-        "Bạn cần gì thêm không?",
-        "Tôi có thể giúp gì nữa không?",
-        "Có yêu cầu nào khác không?",
-        "Có cần tôi làm gì nữa không?"
+        "Bạn cần gì thêm ạ?",
+        "Tôi có thể giúp gì nữa ạ?",
     ]
 
 	playsound("../command/sound/welcome.mp3")

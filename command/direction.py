@@ -27,9 +27,6 @@ def autocomplete_place(input_text, location=None, radius=50000):
         return None
 
 def get_coordinates(address):
-    """
-    Convert an address to coordinates using Goong Geocoding API.
-    """
     url = "https://rsapi.goong.io/geocode"
     params = {
         "address": address,
@@ -88,11 +85,3 @@ def get_directions(origin_address, destination_address, location=None, vehicle="
             return "Không tìm thấy lộ trình phù hợp."
     else:
         return f"Lỗi API Direction: {response.status_code} - {response.text}"
-
-# if _name_ == "_main_":
-#     origin_address = "Đại học Bách Khoa Hồ​ Chí Minh quận 10"
-#     destination_address = "Kí túc xá khu B đại học quốc gia tp.hcm"
-    
-   
-#     result = get_directions(origin_address, destination_address)
-#     print(result)

@@ -2,8 +2,10 @@ import os
 from playsound import playsound
 from speak import speak
 import random
+import subprocess
 SOUND_FOLDER = "./command/sound/animals"
-
+SOUND_FOLDER_STORIES = "./command/sound/story"
+story_process = None
 def play_sound_animal(command):
     animals = {
         "mèo": "cat.mp3",
@@ -48,17 +50,32 @@ def play_sound_animal(command):
         speak(response)
 
 def play_story_sound():
-    sound_folder = "./command/sound/story"  
+    global story_process
     try:
-        sound_files = [file for file in os.listdir(sound_folder) if file.endswith(".mp3") or file.endswith(".wav")]
+        sound_files = [file for file in os.listdir(SOUND_FOLDER_STORIES) if file.endswith(".mp3") or file.endswith(".wav")]
         if not sound_files:
-            print("Không tìm thấy tệp âm thanh nào trong thư mục sound.")
+            print("Không tìm thấy tệp âm thanh nào trong thư mục câu chuyện.")
             speak("Không có câu chuyện nào để kể.")
             return
+
         selected_sound = random.choice(sound_files)
-        sound_path = os.path.join(sound_folder, selected_sound)
-        print(f"Đang phát tệp âm thanh: {selected_sound}")
-        playsound(sound_path)  
+        sound_path = os.path.join(SOUND_FOLDER_STORIES, selected_sound)
+
+        print(f"Đang phát câu chuyện: {selected_sound}")
+        story_process = subprocess.Popen(["ffplay", "-nodisp", "-autoexit", sound_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
     except Exception as e:
-        print(f"Lỗi khi phát âm thanh: {e}")
+        print(f"Lỗi khi phát âm thanh câu chuyện: {e}")
         speak("Đã xảy ra lỗi khi kể chuyện.")
+
+
+def stop_story_sound():
+    global story_process
+    if story_process and story_process.poll() is None:  
+        story_process.terminate()
+        print("Câu chuyện đã được dừng.")
+        speak("Câu chuyện đã dừng.")
+        story_process = None
+    else:
+        print("Không có câu chuyện nào đang được phát.")
+        speak("Hiện không có câu chuyện nào đang kể.")
