@@ -29,10 +29,15 @@ def search_youtube(query):
         return None
 
 music_process = None
-
+audio_temp_file = "audio.webm"
+def delete_old_audio_file():
+    if os.path.exists(audio_temp_file):
+        os.remove(audio_temp_file)
+        print(f"Đã xóa file nhạc cũ: {audio_temp_file}")
 def download_and_play_youtube_audio(video_url):
     global music_process
     try:
+        delete_old_audio_file()
         options = {
             'format': 'bestaudio/best',  
             'outtmpl': 'audio.%(ext)s', 
