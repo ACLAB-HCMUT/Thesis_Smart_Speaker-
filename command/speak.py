@@ -3,6 +3,9 @@ from playsound import playsound
 from pydub import AudioSegment
 from google.cloud import texttospeech
 import os
+from dotenv import load_dotenv
+load_dotenv()
+SOUND_PATH = os.getenv("SOUND_PATH", "sound/command.mp3")
 # def speak(text):
 #     try:
 #         tts = gTTS(text=text, lang='vi')
@@ -47,7 +50,7 @@ def speak_female(text):
             input=input_text, voice=voice, audio_config=audio_config
         )
        
-        output_file = "sound/output.mp3"
+        output_file = SOUND_PATH
         with open(output_file, "wb") as out:
             out.write(response.audio_content)
         print(f"Giọng nói đã được lưu vào file: {output_file}")
@@ -73,7 +76,7 @@ def speak_male(text):
         response = client.synthesize_speech(
             input=input_text, voice=voice, audio_config=audio_config
         )
-        output_file = "sound/output.mp3"
+        output_file = SOUND_PATH
         with open(output_file, "wb") as out:
             out.write(response.audio_content)
         
@@ -106,11 +109,11 @@ def speak(text):
             speak_female(text)
         else:  
             tts = gTTS(text=text, lang='vi')
-            tts.save("sound/command.mp3")
-            audio = AudioSegment.from_file("sound/command.mp3")
-            # audio = audio.speedup(playback_speed=1.25)
-            # audio.export("sound/command.mp3", format="mp3")
-            playsound("sound/command.mp3")
+            tts.save(SOUND_PATH)
+            audio = AudioSegment.from_file(SOUND_PATH)
+            audio = audio.speedup(playback_speed=1.25)
+            audio.export(SOUND_PATH, format="mp3")
+            playsound(SOUND_PATH)
     except Exception as e:
         print(f"Lỗi: {e}")
 # Ngôn ngữ: ['vi-VN']
