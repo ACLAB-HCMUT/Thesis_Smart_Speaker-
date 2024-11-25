@@ -1,5 +1,8 @@
 import speech_recognition as sr
 from speak import *
+import os
+from google.cloud import speech
+from microphone_stream import MicrophoneStream  
 
 def listen_command(max_attempts=2):
     recognizer = sr.Recognizer()
@@ -25,5 +28,51 @@ def listen_command(max_attempts=2):
                 print(f"Không thể yêu cầu dịch vụ Google Speech Recognition; {e}")
                 speak("Có vấn đề với kết nối mạng, vui lòng kiểm tra kết nối mạng.")
                 return None
+    speak("Hẹn gặp lại")
+    return None
+
+
+
+
+def load_google_credentials():
+    credentials_path = os.path.join(os.getcwd(), "my_key.json")
+    if not os.path.exists(credentials_path):
+        raise FileNotFoundError(f"Không tìm thấy file credentials tại: {credentials_path}")
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credentials_path
+
+def listen_command_google(max_attempts=2):
+    load_google_credentials() 
+    client = speech.SpeechClient()
+
+    config = speech.RecognitionConfig(
+        encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
+        sample_rate_hertz=16000,
+        language_code="vi-VN"
+    )
+    streaming_config = speech.StreamingRecognitionConfig(
+        config=config,
+        interim_results=False  
+    )
+
+    attempts = 0
+    while attempts < max_attempts:
+        try:
+            print("Listening........................")
+            audio_stream = MicrophoneStream(16000, 1024) 
+            with audio_stream as stream:
+                audio_generator = stream.generator()
+                requests = (speech.StreamingRecognizeRequest(audio_content=content)
+                            for content in audio_generator)
+                responses = client.streaming_recognize(streaming_config, requests)
+
+                for response in responses:
+                    if response.results and response.results[0].is_final:
+                        command = response.results[0].alternatives[0].transcript
+                        print(f"Lệnh của bạn: {command}")
+                        return command.lower()
+        except Exception as e:
+            attempts += 1
+            print(f"Lỗi: {e}")
+            speak("Tôi không nghe rõ, vui lòng thử lại.")
     speak("Hẹn gặp lại")
     return None
