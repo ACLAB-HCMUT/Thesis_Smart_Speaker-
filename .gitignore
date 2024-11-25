@@ -1,2 +1,5 @@
 **/.env
 **/calendar_events.db
+**/credentials.json
+**/token.json
+**/my_key.json
