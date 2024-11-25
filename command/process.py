@@ -9,6 +9,7 @@ from music import *
 from notification import *
 from my_calendar import *
 from listen import *
+from ask_time import get_current_time
 from kid import play_sound_animal,play_story_sound
 from direction import *
 
@@ -24,6 +25,8 @@ def process_command(command):
     elif "lấy lịch" in command:
         print("Đang lấy danh sách sự kiện...")
         speak(get_calendar_events())
+    elif any(keyword in command for keyword in ["bây giờ là mấy giờ", "mấy giờ rồi", "giờ hiện tại", "bây giờ đang là mấy giờ","hiện tại đang mấy giờ","hiện tại mấy giờ"]):
+        get_current_time()
     elif "thêm lịch" in command:
         input_for_add_event() # add_event inside here
         # print("Đang tạo sự kiện mới...")
