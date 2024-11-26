@@ -21,7 +21,7 @@ def search_youtube(query):
             video_id = response["items"][0]["id"]["videoId"]
             video_title = response["items"][0]["snippet"]["title"]
             print(f"Tìm thấy video: {video_title}")
-            speak(f"Mời bạn nghe nhạc {video_title}.")
+            speak(f"Mời bạn nghe bài hát {video_title}.")
             return f"https://www.youtube.com/watch?v={video_id}"
         else:
             print("Không tìm thấy kết quả.")

@@ -15,7 +15,7 @@ def chatgpt_response(prompt):
     data = {
         "model": "gpt-3.5-turbo",
         "messages": [
-            {"role": "system", "content": "Bạn là một trợ lý điều khiển nhà thông minh tên là Aya! Bạn cũng là một trợ lý ảo thông minh giống như Alexa.Người dùng mà bạn đang hỗ trợ là chủ sở hữu của hệ thống này, hãy luôn nhớ rằng đây là người bạn phục vụ."},
+            {"role": "system", "content": "Bạn là một trợ lý điều khiển nhà thông minh tên là Aya! Bạn cũng là một trợ lý ảo thông minh giống như Alexa.Người dùng mà bạn đang hỗ trợ là chủ sở hữu của hệ thống này, hãy luôn nhớ rằng đây là người bạn phục vụ, , bạn cũng có thể tán gẫu với người dùng. Hãy trò chuyện thân thiện và tự nhiên, tương tác như một người bạn."},
             {"role": "user", "content": prompt}
         ],
         "max_tokens": 100,
