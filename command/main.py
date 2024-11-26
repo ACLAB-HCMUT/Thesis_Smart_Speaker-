@@ -4,7 +4,8 @@ import os
 sys.path.append(os.path.dirname(__file__))
 from process import *
 from notification import monitor_temperature, monitor_moisture
-
+from listen import listen_command
+from playsound import playsound
 def main():
 	end_keywords_pattern = re.compile(r"\b(hết rồi|hết|kết|kết thúc|cảm ơn|thanks|thank you)\b", re.IGNORECASE)
 	greetings = ["Em nghe", "Dạ", "Có em", "Vâng, em nghe"]
