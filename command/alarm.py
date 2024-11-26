@@ -1,77 +1,34 @@
 import re
 from datetime import datetime, timedelta
-from threading import Timer, Thread
-import subprocess
-from listen import *
-alarms = {}
-active_alarm_thread = None
-
-
-def play_alarm_sound():
-    global active_alarm_thread
-    try:
-        process = subprocess.Popen(["aplay", "./command/sound/alarm.wav"])
-        active_alarm_thread = process
-        process.wait()
-    except Exception as e:
-        print(f"Lỗi khi phát âm thanh: {e}")
-
-
-def set_alarm(minute, hour, day_of_month, month, comment=None):
-    now = datetime.now()
-    alarm_time = now.replace(minute=minute, hour=hour, day=day_of_month, month=month, second=0, microsecond=0)
-
-    if alarm_time < now:
-        alarm_time += timedelta(days=1)
-
-    delay = (alarm_time - now).total_seconds()
-
+import os
+sound_file_path = "/home/johnny/capstone11/Thesis_Smart_Speaker/command/sound/alarm.wav"
+def add_alarm_to_cron(minute, hour, day, month, comment=None):
     if not comment:
-        comment = f"Báo thức {len(alarms) + 1}"
+        comment = f"Báo thức {hour}:{minute} - {day}/{month}"
+    
+    cron_command = f'{minute} {hour} {day} {month} * aplay {sound_file_path} # {comment}'
+    os.system(f'(crontab -l; echo "{cron_command}") | crontab -')
+    return f"Báo thức đã được thêm vào cron cho {hour}:{minute} ngày {day}/{month} với tên '{comment}'."
 
-    def alarm_trigger():
-        print(f"Báo thức '{comment}' đang kêu!")
-        sound_thread = Thread(target=play_alarm_sound)
-        sound_thread.start()
-
-        while True:
-            user_input = listen_command()
-            if "tắt" in user_input or "dừng" in user_input:
-                stop_active_alarm()
-                break
-
-    timer = Timer(delay, alarm_trigger)
-    timer.start()
-    alarms[comment] = timer
-    return f"Báo thức đã được đặt cho {alarm_time.strftime('%Y-%m-%d %H:%M')} với tên '{comment}'."
-
-
-def delete_alarm(comment=None):
-    global alarms
-    if comment is None:  
-        for timer in alarms.values():
-            timer.cancel()
-        alarms.clear()
-        return "Tất cả báo thức đã được xóa."
+def remove_alarm_from_cron(comment=None):
+    if not comment:
+        os.system("crontab -r")  
+        return "Tất cả báo thức đã bị xóa khỏi cron."
     else:
-        comment = comment.strip()
-        if comment in alarms:
-            alarms[comment].cancel()
-            del alarms[comment]
-            return f"Báo thức '{comment}' đã được xóa."
-        else:
-            return f"Không tìm thấy báo thức '{comment}'."
+        os.system(f'crontab -l | grep -v "# {comment}" | crontab -')  # Xóa báo thức theo comment
+        return f"Báo thức với tên '{comment}' đã được xóa."
 
-
-def stop_active_alarm():
-    global active_alarm_thread
-    if active_alarm_thread:
-        active_alarm_thread.terminate()
-        active_alarm_thread = None
-        print("Báo thức đã được tắt.")
-    else:
-        print("Không có báo thức nào đang kêu.")
-
+def list_alarms_from_cron():
+    try:
+        result = os.popen("crontab -l").read()
+        if not result.strip():
+            return "Hiện không có báo thức nào."
+        alarms = [line for line in result.split('\n') if "aplay" in line]
+        if not alarms:
+            return "Hiện không có báo thức nào."
+        return "Danh sách báo thức:\n" + "\n".join(alarms)
+    except Exception as e:
+        return f"Lỗi khi liệt kê báo thức: {e}"
 
 def parse_time_expression(time_expression):
     now = datetime.now()
@@ -89,18 +46,9 @@ def parse_time_expression(time_expression):
     else:
         raise ValueError("Thời gian không hợp lệ.")
 
-
-def list_alarms():
-    if not alarms:
-        return "Hiện không có báo thức nào."
-    else:
-        alarm_list = "\n".join([f"- {name}" for name in alarms.keys()])
-        return f"Các báo thức hiện tại:\n{alarm_list}"
-
-
 def alarm_reminder_action(text):
     if re.search(r'\b(xem|danh sách|hiện tại)\s+báo\s+thức\b', text, re.IGNORECASE):
-        return list_alarms()
+        return list_alarms_from_cron()
 
     set_match = re.search(
         r'\b(?:đặt|tạo|lên lịch|báo thức|đánh thức tôi|hẹn giờ)\b.*?\b(?:lúc|trong|sau)?\s*(\d{1,2}:\d{2}|\d+\s*(?:phút|giờ))\b',
@@ -110,22 +58,20 @@ def alarm_reminder_action(text):
         r'\b(?:xóa|hủy)\s+(?:một\s+)?báo\s+thức\b.*?\b(?:tên|gọi\s+là)?\s*([\w\s:-]+)?',
         text, re.IGNORECASE
     )
-    stop_match = re.search(
-        r'\b(?:tắt|dừng)\s+báo\s+thức\b',
-        text, re.IGNORECASE
-    )
 
     if set_match:
         time_expression = set_match.group(1)
-        minute, hour, day, month = parse_time_expression(time_expression)
-        return set_alarm(minute, hour, day, month)
+        try:
+            minute, hour, day, month = parse_time_expression(time_expression)
+            return add_alarm_to_cron(minute, hour, day, month)
+        except ValueError:
+            return "Thời gian báo thức không hợp lệ. Vui lòng kiểm tra lại."
 
     elif delete_match:
         comment = delete_match.group(1)
-        return delete_alarm(comment)
-
-    elif stop_match:
-        return stop_active_alarm()
+        if not comment.strip():
+            return "Vui lòng cung cấp tên của báo thức cần xóa."
+        return remove_alarm_from_cron(comment)
 
     else:
         return "Không nhận diện được yêu cầu. Vui lòng thử lại."

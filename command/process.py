@@ -1,7 +1,7 @@
 from control import control_device, set_volume
 from chatgpt import chatgpt_response
 from is_device import is_device_command
-from speak import speak
+from speak import speak,set_default_voice
 from fine_tuning import fine_tuning_response
 from search_agent import search_and_summarize
 from alarm import *
