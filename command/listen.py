@@ -3,7 +3,7 @@ from speak import *
 import os
 from google.cloud import speech
 from microphone_stream import MicrophoneStream  
-
+MYKEY_PATH = os.path.join(os.getcwd(), "./command/my_key.json")
 # def listen_command(max_attempts=2):
 #     recognizer = sr.Recognizer()
 #     attempts = 0
@@ -32,7 +32,7 @@ from microphone_stream import MicrophoneStream
 #     return None
 
 def load_google_credentials():
-    credentials_path = os.path.join(os.getcwd(), "./command/my_key.json")
+    credentials_path = MYKEY_PATH
     if not os.path.exists(credentials_path):
         raise FileNotFoundError(f"Không tìm thấy file credentials tại: {credentials_path}")
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credentials_path
