@@ -168,7 +168,7 @@ def process_command(command):
         print(response)
         speak(response)
         return 1
-    elif any(keyword in command for keyword in ["căn","giai thừa","đạo hàm","tích phân","bình phương", "phép tính", "chia", "nhân", "cộng", "trừ"]):
+    elif any(keyword in command for keyword in ["căn","giai thừa","đạo hàm","tích phân","bình phương", "phép tính", "chia", "nhân", "cộng", "trừ", "hàm số mũ","logarit", "lập phương"]):
         try:
             result = math_calculation(command)
             print(f"Kết quả toán học: {result}")

@@ -31,9 +31,6 @@ def listen_command(max_attempts=2):
     speak("Hẹn gặp lại")
     return None
 
-
-
-
 def load_google_credentials():
     credentials_path = os.path.join(os.getcwd(), "my_key.json")
     if not os.path.exists(credentials_path):
