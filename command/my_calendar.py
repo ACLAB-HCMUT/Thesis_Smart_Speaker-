@@ -92,74 +92,66 @@ def normalize_date(raw_date): # Chuyển chuỗi ngày tiếng Việt sang đị
         return None
 
 def input_for_add_event():
-    # speak("Tên lịch là gì ?")
-    # summary = listen_command()
-    # if ("Bỏ qua" in summary or "bỏ qua" in summary):
-    #     summary = None
-    # speak("Ngày nào bắt đầu ?")
-    # start_day = listen_command()
-    # if ("Bỏ qua" in start_day or "bỏ qua" in start_day):
-    #     start_day = None
-    # speak("Bắt đầu mấy giờ ?")
-    # start_time = listen_command()
-    # if ("Bỏ qua" in start_time or "bỏ qua" in start_time):
-    #     start_time = None
-    # speak("Ngày nào kết thúc ?")
-    # end_day = listen_command()
-    # if ("Bỏ qua" in end_day or "bỏ qua" in end_day):
-    #     end_day = None
-    # speak("Kết thúc mấy giờ ?")
-    # end_time = listen_command()
-    # if ("Bỏ qua" in end_time or "bỏ qua" in end_time):
-    #     end_time = None
-    # speak("Địa điểm ở đâu ?")
-    # location = listen_command()
-    # if ("Bỏ qua" in location or "bỏ qua" in location):
-    #     location = None
-    # speak("Ghi chú là gì ?")
-    # description = listen_command()
-    # if ("Bỏ qua" in description or "bỏ qua" in description):
-    #     description = None
+    speak("Tên lịch là gì ?")
+    summary = listen_command()
+    if ("Bỏ qua" in summary or "bỏ qua" in summary):
+        summary = None
+    speak("Ngày nào bắt đầu ?")
+    start_day = listen_command()
+    if ("Bỏ qua" in start_day or "bỏ qua" in start_day):
+        start_day = None
+    speak("Bắt đầu mấy giờ ?")
+    start_time = listen_command()
+    if ("Bỏ qua" in start_time or "bỏ qua" in start_time):
+        start_time = None
+    speak("Ngày nào kết thúc ?")
+    end_day = listen_command()
+    if ("Bỏ qua" in end_day or "bỏ qua" in end_day):
+        end_day = None
+    speak("Kết thúc mấy giờ ?")
+    end_time = listen_command()
+    if ("Bỏ qua" in end_time or "bỏ qua" in end_time):
+        end_time = None
+    speak("Địa điểm ở đâu ?")
+    location = listen_command()
+    if ("Bỏ qua" in location or "bỏ qua" in location):
+        location = None
+    speak("Ghi chú là gì ?")
+    description = listen_command()
+    if ("Bỏ qua" in description or "bỏ qua" in description):
+        description = None
 
-    # while (1):
-    #     speak(f"Lịch của bạn tên là {summary}, tại {location}, với ghi chú {description}, bắt đầu lúc {start_time}:{start_day} và kết thúc lúc {end_time}:{end_day}. Có sai ở đâu không ?")
-    #     confirm_speech = listen_command()
+    while (1):
+        speak(f"Lịch của bạn tên là {summary}, tại {location}, với ghi chú {description}, bắt đầu lúc {start_time}:{start_day} và kết thúc lúc {end_time}:{end_day}. Có sai ở đâu không ?")
+        confirm_speech = listen_command()
 
-    #     if ("Đúng" in confirm_speech or "đúng" in confirm_speech or "chính xác" in confirm_speech):
-    #         break
-    #     elif ("Sai" in confirm_speech or "sai" in confirm_speech):
-    #         if ("Tên lịch" in confirm_speech or "tên lịch" in confirm_speech):
-    #             speak("Đọc lại tên lịch")
-    #             summary = listen_command()
-    #         if ("Địa điểm" in confirm_speech or "địa điểm" in confirm_speech):
-    #             speak("Đọc lại địa điểm")
-    #             location = listen_command()
-    #         if ("Ghi chú" in confirm_speech or "ghi chú" in confirm_speech):
-    #             speak("Đọc lại ghi chú")
-    #             location = listen_command()
-    #         if ("Ngày bắt đầu" in confirm_speech or "ngày bắt đầu" in confirm_speech):
-    #             speak("Đọc lại ngày bắt đầu")
-    #             start_day = listen_command()
-    #         if ("Ngày kết thúc" in confirm_speech or "ngày kết thúc" in confirm_speech):
-    #             speak("Đọc lại ngày kết thúc")
-    #             end_day = listen_command()
-    #         if ("Giờ bắt đầu" in confirm_speech or "giờ bắt đầu" in confirm_speech):
-    #             speak("Đọc lại giờ bắt đầu")
-    #             start_time = listen_command()
-    #         if ("Giờ kết thúc" in confirm_speech or "giờ kết thúc" in confirm_speech):
-    #             speak("Đọc lại giờ kết thúc")
-    #             end_time = listen_command()
-    #     else:
-    #         speak("Có lỗi xảy ra. Thử lại")
-
-    summary = "Họp nhóm dự án"
-    location = "Hồ Chí Minh, Việt Nam"
-    description = "Thảo luận tiến độ dự án."
-    start_day = "ngày 26 tháng 11 năm 2024"
-    start_time = "10:"
-    end_day = "ngày 27 tháng 11 năm 2024"
-    end_time = "23:59"
-    
+        if ("Đúng" in confirm_speech or "đúng" in confirm_speech or "chính xác" in confirm_speech):
+            break
+        elif ("Sai" in confirm_speech or "sai" in confirm_speech):
+            if ("Tên lịch" in confirm_speech or "tên lịch" in confirm_speech):
+                speak("Đọc lại tên lịch")
+                summary = listen_command()
+            if ("Địa điểm" in confirm_speech or "địa điểm" in confirm_speech):
+                speak("Đọc lại địa điểm")
+                location = listen_command()
+            if ("Ghi chú" in confirm_speech or "ghi chú" in confirm_speech):
+                speak("Đọc lại ghi chú")
+                location = listen_command()
+            if ("Ngày bắt đầu" in confirm_speech or "ngày bắt đầu" in confirm_speech):
+                speak("Đọc lại ngày bắt đầu")
+                start_day = listen_command()
+            if ("Ngày kết thúc" in confirm_speech or "ngày kết thúc" in confirm_speech):
+                speak("Đọc lại ngày kết thúc")
+                end_day = listen_command()
+            if ("Giờ bắt đầu" in confirm_speech or "giờ bắt đầu" in confirm_speech):
+                speak("Đọc lại giờ bắt đầu")
+                start_time = listen_command()
+            if ("Giờ kết thúc" in confirm_speech or "giờ kết thúc" in confirm_speech):
+                speak("Đọc lại giờ kết thúc")
+                end_time = listen_command()
+        else:
+            speak("Có lỗi xảy ra. Thử lại")
+            
     if start_day:
         start_day = normalize_date(start_day)
     if end_day:
