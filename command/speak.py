@@ -116,6 +116,7 @@ def speak(text):
             playsound(SOUND_PATH)
     except Exception as e:
         print(f"Lỗi: {e}")
+
 # Ngôn ngữ: ['vi-VN']
 # SSML Gender: FEMALE
 # Tần số mẫu: 24000
