@@ -14,7 +14,7 @@ def main():
         "Tôi có thể giúp gì nữa ạ?",
     ]
 
-	playsound("../command/sound/welcome.mp3")
+	playsound("./command/sound/welcome.mp3")
 	# monitor_temperature()
 	# monitor_moisture()
 	greeting = random.choice(greetings)
