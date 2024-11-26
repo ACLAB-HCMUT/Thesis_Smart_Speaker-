@@ -3,6 +3,7 @@ from googleapiclient.discovery import build
 import os
 from dotenv import load_dotenv
 import subprocess
+from speak import speak
 load_dotenv()
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
@@ -20,6 +21,7 @@ def search_youtube(query):
             video_id = response["items"][0]["id"]["videoId"]
             video_title = response["items"][0]["snippet"]["title"]
             print(f"Tìm thấy video: {video_title}")
+            speak(f"Mời bạn nghe nhạc {video_title}.")
             return f"https://www.youtube.com/watch?v={video_id}"
         else:
             print("Không tìm thấy kết quả.")
@@ -48,11 +50,8 @@ def download_and_play_youtube_audio(video_url):
             info = ydl.extract_info(video_url, download=True)
             audio_file = ydl.prepare_filename(info)
         
-        
-        print("Đang phát nhạc... Nhập 'dừng nhạc' để dừng.")
         music_process = subprocess.Popen(["ffplay", "-nodisp", "-autoexit", audio_file])
 
-        
         music_process.wait()
 
      
