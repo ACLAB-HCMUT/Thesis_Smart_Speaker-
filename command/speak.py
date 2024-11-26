@@ -5,8 +5,8 @@ from google.cloud import texttospeech
 import os
 from dotenv import load_dotenv
 load_dotenv()
-# SOUND_PATH = os.getenv("SOUND_PATH", "./command/sound/command.mp3")
-SOUND_PATH = "./command/sound/command.mp3"
+SOUND_PATH = os.getenv("SOUND_PATH", "./command/sound/command.mp3") # để như vầy có lỗi no such file or directory /sound/comand.mp3
+MYKEY_PATH = os.path.join(os.getcwd(), "./command/my_key.json")
 # def speak(text):
 #     try:
 #         tts = gTTS(text=text, lang='vi')
@@ -21,7 +21,7 @@ SOUND_PATH = "./command/sound/command.mp3"
 default_voice="default"
 def load_google_credentials():
    
-    credentials_path = os.path.join(os.getcwd(), "./command/my_key.json")
+    credentials_path = MYKEY_PATH
     
    
     if not os.path.exists(credentials_path):
