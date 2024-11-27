@@ -49,8 +49,8 @@ def process_command(command):
     ):
         get_current_time()
     elif any(
-        keyword in command for keyword in ["thêm sự kiện", "tạo sự kiện", "lên sự kiện"]
-    ):  # thêm lịch bị trùng với câu chat GPT, bỏ đi, hạn chế chữ lịch, nó sẽ nhận diện ra sai: chữ lệnh, chữ lệch,...
+        keyword in command for keyword in ["thêm sự kiện", "tạo sự kiện", "lên sự kiện","thêm lịch", "lên lịch"]
+    ):  
         input_for_add_event()  # add_event inside here
         # print("Đang tạo sự kiện mới...")
         # summary = "Họp nhóm dự án"
@@ -236,6 +236,7 @@ def process_command(command):
         keyword in command
         for keyword in ["báo thức", "nhắc nhở", "hẹn giờ", "alarm", "reminder"]
     ):
+        print ("process:", command)
         response = alarm_reminder_action(command)
         print(response)
         speak(response)
