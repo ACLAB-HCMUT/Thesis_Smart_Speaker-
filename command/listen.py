@@ -3,41 +3,41 @@ from speak import *
 import os
 from google.cloud import speech
 from microphone_stream import MicrophoneStream  
-
-def listen_command(max_attempts=2):
-    recognizer = sr.Recognizer()
-    attempts = 0
-    while attempts < max_attempts:
-        with sr.Microphone() as source:
-            print("Listening........................")
-            recognizer.adjust_for_ambient_noise(source, duration=1)  
-            try:
-                audio = recognizer.listen(source, timeout=7, phrase_time_limit=7)
-                command = recognizer.recognize_google(audio, language="vi-VN")
-                print(f"Lệnh của bạn: {command}")
-                return command.lower()
-            except sr.UnknownValueError:
-                attempts += 1
-                print("Không thể nhận diện được giọng nói.")
-                speak("Bạn nói gì tôi nghe không rõ.")
-            except sr.WaitTimeoutError:
-                attempts += 1
-                print("Không nghe thấy giọng nói. Hãy thử lại.")
-                speak("Môi trường có vẻ hơi ồn, hãy thử lại ở nơi yên tĩnh hơn.")
-            except sr.RequestError as e:
-                print(f"Không thể yêu cầu dịch vụ Google Speech Recognition; {e}")
-                speak("Có vấn đề với kết nối mạng, vui lòng kiểm tra kết nối mạng.")
-                return None
-    speak("Hẹn gặp lại")
-    return None
+MYKEY_PATH = os.path.join(os.getcwd(), "./command/my_key.json")
+# def listen_command(max_attempts=2):
+#     recognizer = sr.Recognizer()
+#     attempts = 0
+#     while attempts < max_attempts:
+#         with sr.Microphone() as source:
+#             print("Listening........................")
+#             recognizer.adjust_for_ambient_noise(source, duration=1)  
+#             try:
+#                 audio = recognizer.listen(source, timeout=7, phrase_time_limit=7)
+#                 command = recognizer.recognize_google(audio, language="vi-VN")
+#                 print(f"Lệnh của bạn: {command}")
+#                 return command.lower()
+#             except sr.UnknownValueError:
+#                 attempts += 1
+#                 print("Không thể nhận diện được giọng nói.")
+#                 speak("Bạn nói gì tôi nghe không rõ.")
+#             except sr.WaitTimeoutError:
+#                 attempts += 1
+#                 print("Không nghe thấy giọng nói. Hãy thử lại.")
+#                 speak("Môi trường có vẻ hơi ồn, hãy thử lại ở nơi yên tĩnh hơn.")
+#             except sr.RequestError as e:
+#                 print(f"Không thể yêu cầu dịch vụ Google Speech Recognition; {e}")
+#                 speak("Có vấn đề với kết nối mạng, vui lòng kiểm tra kết nối mạng.")
+#                 return None
+#     speak("Hẹn gặp lại")
+#     return None
 
 def load_google_credentials():
-    credentials_path = os.path.join(os.getcwd(), "my_key.json")
+    credentials_path = MYKEY_PATH
     if not os.path.exists(credentials_path):
         raise FileNotFoundError(f"Không tìm thấy file credentials tại: {credentials_path}")
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credentials_path
 
-def listen_command_google(max_attempts=2):
+def listen_command(max_attempts=2):
     load_google_credentials() 
     client = speech.SpeechClient()
 

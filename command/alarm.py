@@ -1,12 +1,12 @@
 import re
 from datetime import datetime, timedelta
 import os
-sound_file_path = "/home/johnny/capstone11/Thesis_Smart_Speaker/command/sound/alarm.wav"
+sound_file_path = "/home/pi/Desktop/Thesis_Smart_Speaker/command/sound/alarm.wav"
 def add_alarm_to_cron(minute, hour, day, month, comment=None):
     if not comment:
         comment = f"Báo thức {hour}:{minute} - {day}/{month}"
     
-    cron_command = f'{minute} {hour} {day} {month} * aplay {sound_file_path} # {comment}'
+    cron_command = f'{minute} {hour} {day} {month} * DISPLAY=:0 XDG_RUNTIME_DIR=/run/user/\$(id -u) /usr/bin/aplay {sound_file_path}' # # comment
     os.system(f'(crontab -l; echo "{cron_command}") | crontab -')
     return f"Báo thức đã được thêm vào với tên '{comment}'."
 

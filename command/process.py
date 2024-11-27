@@ -26,7 +26,7 @@ def process_command(command):
         speak(get_calendar_events())
     elif any(keyword in command for keyword in ["bây giờ là mấy giờ", "mấy giờ rồi", "giờ hiện tại", "bây giờ đang là mấy giờ","hiện tại đang mấy giờ","hiện tại mấy giờ"]):
         get_current_time()
-    elif any(keyword in command for keyword in ["thêm lịch", "tạo sự kiện", "lên lịch"]):
+    elif any(keyword in command for keyword in ["thêm sự kiện", "tạo sự kiện", "lên sự kiện"]): # thêm lịch bị trùng với câu chat GPT, bỏ đi, hạn chế chữ lịch, nó sẽ nhận diện ra sai: chữ lệnh, chữ lệch,...
         input_for_add_event() # add_event inside here
         # print("Đang tạo sự kiện mới...")
         # summary = "Họp nhóm dự án"

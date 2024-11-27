@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import os.path
 from listen import listen_command
 from speak import speak
@@ -151,14 +151,14 @@ def input_for_add_event():
                 end_time = listen_command()
         else:
             speak("Có lỗi xảy ra. Thử lại")
-    
-    if start_day is None:
+            
+    if start_day:
         start_day = normalize_date(start_day)
-    if end_day is None:
+    if end_day:
         end_day = normalize_date(end_day)
-    if start_time is None:
+    if start_time:
         start_time = normalize_time(start_time)
-    if end_time is None:
+    if end_time:
         end_time = normalize_time(end_time)
     speak("Ok, tôi đã lưu lịch. Cảm ơn nhé")
     print(f"Lịch của bạn tên là {summary}, tại {location}, với ghi chú {description}, bắt đầu lúc {start_time}:{start_day} và kết thúc lúc {end_time}:{end_day}")
