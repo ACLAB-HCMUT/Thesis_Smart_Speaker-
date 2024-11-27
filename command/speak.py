@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 # SOUND_PATH = os.getenv("SOUND_PATH", "./command/sound/command.mp3") # để như vầy có warning no such file or directory /sound/comand.mp3
-SOUND_PATH = "./command/sound/command.mp3" # để như vầy không báo warning, chạy bình thường
+SOUND_PATH = "sound/command.mp3" 
 MYKEY_PATH = os.path.join(os.getcwd(), "./command/my_key.json")
 # def speak(text):
 #     try:
