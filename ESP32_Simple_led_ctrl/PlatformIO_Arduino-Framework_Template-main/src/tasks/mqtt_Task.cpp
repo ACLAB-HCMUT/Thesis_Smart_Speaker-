@@ -1,13 +1,12 @@
 #include "mqtt_Task.h"
 #include "led_Task.h"
 #include "fan_Task.h"
-#include "temp_Task.h"
 
 // Adafruit IO MQTT 
 const char* mqttServer = "io.adafruit.com";
 const int mqttPort = 1883;
 const char* mqttUser = "duongwt16";
-const char* mqttKey = "aio_mJMS46fQhBxlvwgBfbgKyTfcy8cT";
+const char* mqttKey = "aio_jhVF48MzfamQgz6wSIwMH0rqIXYm";
 
 
 // Feed names
