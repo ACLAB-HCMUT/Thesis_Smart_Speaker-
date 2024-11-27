@@ -2,12 +2,13 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include "temp_Task.h"
 
 // MQTT server details
 const char* mqtt_txServer = "io.adafruit.com";
 const int mqtt_txPort = 1883;
 const char* mqtt_txUser = "duongwt16";
-const char* mqtt_txKey = "aio_mJMS46fQhBxlvwgBfbgKyTfcy8cT";
+const char* mqtt_txKey = "aio_jhVF48MzfamQgz6wSIwMH0rqIXYm";
 
 // Feed names
 const char* tx_feedNames[] = {
@@ -17,7 +18,7 @@ const char* tx_feedNames[] = {
     "duongwt16/feeds/living-room.temp"
 };
 
-const unsigned long publishInterval = 10000; // 5 seconds
+const unsigned long publishInterval = 10000; // 10 seconds
 WiFiClient espClient;
 PubSubClient mqtt_txClient(espClient);
 
@@ -51,8 +52,8 @@ void mqtt_txTask(void *pvParameters) {
         }
         mqtt_txClient.loop();
 
-        float mois = 30 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (80 - 30)));
-        float temp = 20 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (37 - 20)));
+        float mois = getTemp();
+        float temp = getMois();
         
         char moisStr[8];
         char tempStr[8];
@@ -76,7 +77,7 @@ void mqtt_txTask(void *pvParameters) {
     }
 }
 
-void setup_mqtt_tx() {
+void createMQTT_TX() {
     mqtt_txClient.setServer(mqtt_txServer, mqtt_txPort);
     xTaskCreate(mqtt_txTask, "MQTT_tx Task", 4096, NULL, 1, NULL);
 }

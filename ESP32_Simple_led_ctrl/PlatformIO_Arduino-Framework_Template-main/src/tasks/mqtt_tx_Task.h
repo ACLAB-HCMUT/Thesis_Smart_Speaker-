@@ -3,7 +3,7 @@
 
 #include <PubSubClient.h>
 
-void setup_mqtt_tx();
+void createMQTT_TX();
 void mqtt_txTask(void *pvParameters);
 
 #endif // MQTT_TX_TASK_H

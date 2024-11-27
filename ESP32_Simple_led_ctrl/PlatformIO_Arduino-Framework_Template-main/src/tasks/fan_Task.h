@@ -9,7 +9,6 @@
 // Function prototypes
 void setupFan();
 void setFanSpeed(uint8_t speed);
-void turnFanOn();
-void turnFanOff();
+void fan_handle(const char* message);
 
 #endif // FAN_TASK_H
