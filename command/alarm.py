@@ -1,7 +1,7 @@
 import re
 from datetime import datetime, timedelta
 import os
-sound_file_path = "/home/pi/Desktop/Thesis_Smart_Speaker/command/sound/alarm.wav"
+sound_file_path = "/home/johnny/capstone11/Thesis_Smart_Speaker/command/sound/alarm.wav"
 def add_alarm_to_cron(minute, hour, day, month, comment=None):
     if not comment:
         comment = f"Báo thức {hour}:{minute} - {day}/{month}"
@@ -32,21 +32,34 @@ def list_alarms_from_cron():
 
 def parse_time_expression(time_expression):
     now = datetime.now()
-    if re.match(r'\d+:\d+', time_expression):  
-        hour, minute = map(int, time_expression.split(':'))
+    
+    # Kiểm tra trường hợp "hh:mm"
+    if re.match(r'(\d{1,2}):(\d{2})', time_expression):  
+        hour, minute = map(int, re.findall(r'(\d{1,2}):(\d{2})', time_expression)[0])
         return minute, hour, now.day, now.month
-    elif re.match(r'\d+\s*phút', time_expression):  
-        minutes = int(re.search(r'\d+', time_expression).group())
+
+    # Kiểm tra trường hợp "phút"
+    elif re.match(r'(\d+)\s*phút', time_expression):  
+        minutes = int(re.search(r'(\d+)', time_expression).group())
         future_time = now + timedelta(minutes=minutes)
         return future_time.minute, future_time.hour, future_time.day, future_time.month
-    elif re.match(r'\d+\s*giờ', time_expression):  
-        hours = int(re.search(r'\d+', time_expression).group())
+    
+    # Kiểm tra trường hợp "giờ"
+    elif re.match(r'(\d+)\s*giờ', time_expression):  
+        hours = int(re.search(r'(\d+)', time_expression).group())
         future_time = now + timedelta(hours=hours)
         return future_time.minute, future_time.hour, future_time.day, future_time.month
+    
+    # Kiểm tra trường hợp giờ là "0 giờ"
+    elif re.match(r'0\s*giờ\s*(\d+)\s*phút', time_expression):  # Xử lý "0 giờ 43 phút"
+        minutes = int(re.search(r'(\d+)', time_expression).group())
+        return minutes, 0, now.day, now.month
+    
     else:
         raise ValueError("Thời gian không hợp lệ.")
 
 def alarm_reminder_action(text):
+    print("checkpoint:  ",text)
     if re.search(r'\b(xem|danh sách|hiện tại)\s+báo\s+thức\b', text, re.IGNORECASE):
         return list_alarms_from_cron()
     set_match = re.search(

@@ -5,19 +5,8 @@ from google.cloud import texttospeech
 import os
 from dotenv import load_dotenv
 load_dotenv()
-# SOUND_PATH = os.getenv("SOUND_PATH", "./command/sound/command.mp3") # để như vầy có warning no such file or directory /sound/comand.mp3
 SOUND_PATH = "sound/command.mp3" 
-MYKEY_PATH = os.path.join(os.getcwd(), "./command/my_key.json")
-# def speak(text):
-#     try:
-#         tts = gTTS(text=text, lang='vi')
-#         tts.save("sound/command.mp3")
-#         audio = AudioSegment.from_file("sound/command.mp3")
-#         audio = audio.speedup(playback_speed=1.25)
-#         audio.export("sound/command.mp3", format="mp3")
-#         playsound("sound/command.mp3")
-#     except Exception as e:
-#         print(f"Lỗi: {e}")
+MYKEY_PATH = os.path.join(os.getcwd(), "my_key.json")
 
 default_voice="default"
 def load_google_credentials():
@@ -81,8 +70,6 @@ def speak_male(text):
         output_file = SOUND_PATH
         with open(output_file, "wb") as out:
             out.write(response.audio_content)
-        
-
         playsound(output_file)
 
     except Exception as e:

@@ -27,7 +27,7 @@ def main():
 			break
 		command= command.lower()
 		if end_keywords_pattern.search(command):
-			speak("Không có chi ạ.")
+			speak("Dạ vâng ạ")
 			print(f"End-----------------")
 			break
 		else:
