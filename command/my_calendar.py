@@ -9,6 +9,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from speak import speak
 from listen import listen_command
+from fuzzywuzzy import fuzz # type: ignore
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 def normalize_date(raw_date):
     raw_date = raw_date.lower().strip()
@@ -225,7 +226,7 @@ def input_for_add_event():
 
 # input_for_add_event()
 # print(get_calendar_events())
-# delete_event_by_name_or_time(summary="Họp nhóm dự án")
+
 # summary = "Họp nhóm dự án"
 # location = "Hồ Chí Minh, Việt Nam"
 # description = "Thảo luận tiến độ dự án."
@@ -289,7 +290,6 @@ def get_calendar_events():
 
 def delete_event_by_name_or_time(summary=None, start_time=None):
     creds = None
-    
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
     if not creds or not creds.valid:
@@ -306,7 +306,6 @@ def delete_event_by_name_or_time(summary=None, start_time=None):
     try:
         service = build("calendar", "v3", credentials=creds)
 
-        
         now = datetime.datetime.now(datetime.timezone.utc).isoformat()
         events_result = (
             service.events()
@@ -321,16 +320,16 @@ def delete_event_by_name_or_time(summary=None, start_time=None):
         )
         events = events_result.get("items", [])
 
-       
         event_to_delete = None
         for event in events:
             event_summary = event.get("summary", "")
             event_start = event["start"].get("dateTime", event["start"].get("date"))
             
-            if summary and summary.lower() in event_summary.lower():
+            # Sử dụng khớp chính xác hoặc so sánh mờ (fuzzy matching)
+            if summary and summary.lower() == event_summary.lower():
                 event_to_delete = event
                 break
-            if start_time and start_time in event_start:
+            if summary and fuzz.ratio(summary.lower(), event_summary.lower()) > 80:  # So sánh mờ với ngưỡng 80%
                 event_to_delete = event
                 break
 
@@ -339,13 +338,39 @@ def delete_event_by_name_or_time(summary=None, start_time=None):
             return "Không tìm thấy sự kiện phù hợp để xóa."
         
         event_id = event_to_delete["id"]
+        
+        # Ghi lại sự kiện trước khi xóa để kiểm tra
+        print(f"Sự kiện trước khi xóa: {event_to_delete.get('summary')}, ID: {event_id}")
+
+        # Thực hiện xóa sự kiện
         service.events().delete(calendarId="primary", eventId=event_id).execute()
-        print(f"Đã xóa sự kiện: {event_to_delete.get('summary')} thành công.")
-        return f"Đã xóa sự kiện: {event_to_delete.get('summary')} thành công."
+        
+        # Kiểm tra lại tất cả các sự kiện
+        events_result = service.events().list(
+            calendarId="primary",
+            timeMin=now,
+            maxResults=50,
+            singleEvents=True,
+            orderBy="startTime",
+        ).execute()
+
+        events = events_result.get("items", [])
+        event_deleted = True
+        for event in events:
+            if event['id'] == event_id:
+                event_deleted = False
+                break
+
+        if event_deleted:
+            print(f"Sự kiện đã bị xóa thành công: {event_to_delete.get('summary')}")
+            return f"Sự kiện {event_to_delete.get('summary')} đã bị xóa thành công."
+        else:
+            print(f"Sự kiện vẫn còn tồn tại: {event_to_delete.get('summary')}")
+            return f"Sự kiện {event_to_delete.get('summary')} vẫn còn tồn tại."
 
     except HttpError as error:
         print(f"Đã xảy ra lỗi khi xóa sự kiện: {error}")
-
+        return f"Đã xảy ra lỗi khi xóa sự kiện: {error}"
 def update_event_by_name_or_time(summary=None, start_time=None, new_summary=None, new_location=None, new_description=None, new_start_time=None, new_end_time=None):
     creds = None
     if os.path.exists("token.json"):
@@ -412,3 +437,22 @@ def update_event_by_name_or_time(summary=None, start_time=None, new_summary=None
 
     except HttpError as error:
         print(f"Đã xảy ra lỗi khi cập nhật sự kiện: {error}")
+
+def extract_time_from_command(command):
+    match = re.search(r"\b(\d{1,2})\s*(tháng|day)?\s*(\d{1,2})\s*(năm|year)?\s*(\d{4})\b", command)
+    if match:
+        day = int(match.group(1))
+        month = int(match.group(3))
+        year = int(match.group(5))
+       
+        date_time_str = f"{year}-{month:02d}-{day:02d}T00:00:00+07:00"
+        return date_time_str
+    return None
+
+
+def extract_event_name_from_command(command):
+    keywords = ["họp nhóm", "hội thảo", "bữa tiệc", "cuộc họp", "sự kiện"]
+    for keyword in keywords:
+        if keyword in command:
+            return keyword 
+    return None

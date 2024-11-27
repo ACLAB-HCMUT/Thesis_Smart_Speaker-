@@ -7,7 +7,7 @@ from search_agent import search_and_summarize
 from alarm import *
 from music import *
 from notification import *
-from my_calendar import get_calendar_events, input_for_add_event
+from my_calendar import get_calendar_events, input_for_add_event,extract_time_from_command,delete_event_by_name_or_time,extract_event_name_from_command
 from ask_time import get_current_time
 from kid import play_sound_animal, play_story_sound
 from direction import get_directions
@@ -48,6 +48,33 @@ def process_command(command):
         ]
     ):
         get_current_time()
+    elif any(
+        keyword in command
+        for keyword in ["xóa sự kiện", "gỡ sự kiện", "xóa lịch", "gỡ lịch", "hủy sự kiện"]
+    ):
+        print("Đang xóa sự kiện...")
+
+        if "vào" in command or "ngày" in command:
+            time_to_delete = extract_time_from_command(command)
+            if time_to_delete:
+                response = delete_event_by_name_or_time(start_time=time_to_delete)
+                print(f"Đã xóa sự kiện vào {time_to_delete}.")
+            else:
+                response = "Không thể xác định thời gian của sự kiện. Vui lòng thử lại."
+            speak(response)
+
+        else:
+           
+            event_name = extract_event_name_from_command(command)
+            if event_name:
+                response = delete_event_by_name_or_time(summary=event_name)
+                print(f"Đã xóa sự kiện '{event_name}'.")
+            else:
+                response = "Vui lòng cung cấp tên sự kiện bạn muốn xóa."
+                speak(response)
+
+        print(response)
+        speak(response)
     elif any(
         keyword in command for keyword in ["thêm sự kiện", "tạo sự kiện", "lên sự kiện","thêm lịch", "lên lịch"]
     ):  
