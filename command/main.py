@@ -6,6 +6,7 @@ from process import *
 from notification import monitor_temperature, monitor_moisture
 from listen import listen_command
 from playsound import playsound
+WELCOME_SOUND="sound/welcome.mp3"
 def main():
 	end_keywords_pattern = re.compile(r"\b(hết rồi|hết|kết|kết thúc|cảm ơn|thanks|thank you)\b", re.IGNORECASE)
 	greetings = ["Em nghe", "Dạ", "Có em", "Vâng, em nghe"]
@@ -14,7 +15,7 @@ def main():
         "Tôi có thể giúp gì nữa ạ?",
     ]
 
-	playsound("./command/sound/welcome.mp3")
+	playsound(WELCOME_SOUND)
 	# monitor_temperature()
 	# monitor_moisture()
 	greeting = random.choice(greetings)
