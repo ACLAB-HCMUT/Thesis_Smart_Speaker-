@@ -10,12 +10,11 @@ from notification import *
 from my_calendar import get_calendar_events, input_for_add_event,extract_time_from_command,delete_event_by_name_or_time,extract_event_name_from_command
 from ask_time import get_current_time
 from kid import play_sound_animal, play_story_sound
-from direction import get_directions
+from direction import process_direction
 from math_calculation import math_calculation
 
 from listen import listen_command
 def process_command(command):
-    address_data = {"origin": None, "destination": None}
     global music_process
     global default_voice
     if any(
@@ -189,69 +188,8 @@ def process_command(command):
 
         print(response)
         speak(response)
-    elif any(keyword in command for keyword in ["đường từ", "tìm đường", "chỉ đường", "hướng dẫn đường", "đường đi từ"]):
-        pattern = r"từ (.+) (đến|tới)?\s*(.*)"
-        match = re.search(pattern, command)
-        
-        if match:
-            origin_address = match.group(1).strip()
-            destination_address = match.group(3).strip()
-
-            if not destination_address:
-                response = "Vui lòng cung cấp địa chỉ đích đến."
-                print(response)
-                speak(response)
-                destination_address = listen_command().strip()  
-
-            address_data["origin"] = origin_address
-            address_data["destination"] = destination_address
-
-            print(f"Đang tìm đường từ '{origin_address}' tới '{destination_address}'...")
-            try:
-                result = get_directions(origin_address, destination_address)
-                if result: 
-                    print(result)            
-                    speak(result)
-                else:
-                    response = "Xin lỗi, không tìm thấy đường từ địa chỉ bạn yêu cầu. Vui lòng thử lại."
-                    print(response)
-                    speak(response)
-            except Exception as e:
-                response = "Có lỗi xảy ra khi tìm đường. Vui lòng thử lại sau."
-                print(f"Lỗi: {e}")
-                speak(response)
-        else:
-            if address_data["origin"] and not address_data["destination"]:
-                response = "Vui lòng cung cấp địa điểm đích đến:"
-                print(response)
-                speak(response)
-               
-                address_data["destination"] = listen_command().strip()  
-
-            elif not address_data["origin"]:
-                response = "Vui lòng cung cấp địa điểm hiện tại của bạn:"
-                print(response)
-                speak(response)
-                address_data["origin"] = listen_command().strip() 
-
-            if address_data["origin"] and address_data["destination"]:
-                origin_address = address_data["origin"]
-                destination_address = address_data["destination"]
-                print(f"Đang tìm đường từ '{origin_address}' tới '{destination_address}'...")
-                
-                try:
-                    result = get_directions(origin_address, destination_address)
-                    if result:
-                        print(result)
-                        speak(result)
-                    else:
-                        response = "Xin lỗi, không tìm thấy đường từ địa chỉ bạn yêu cầu. Vui lòng thử lại."
-                        print(response)
-                        speak(response)
-                except Exception as e:
-                    response = "Có lỗi xảy ra khi tìm đường. Vui lòng thử lại sau."
-                    print(f"Lỗi: {e}")
-                    speak(response)
+    elif any(keyword in command for keyword in ["đường từ", "tìm đường", "chỉ đường", "hướng dẫn đường", "đường đi từ", "hỏi đường"]):
+        process_direction(command)
     elif any(
         keyword in command
         for keyword in ["thời tiết", "tin tức", "hôm nay", "hiện nay", "thời sự"]
