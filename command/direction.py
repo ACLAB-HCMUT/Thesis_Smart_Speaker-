@@ -1,6 +1,9 @@
 import requests
 import os
 from dotenv import load_dotenv
+import re
+from speak import speak
+from listen import listen_command
 load_dotenv()
 API_MAP_KEY = os.getenv('API_MAP_KEY')
 
@@ -85,3 +88,67 @@ def get_directions(origin_address, destination_address, location=None, vehicle="
             return "Không tìm thấy lộ trình phù hợp."
     else:
         return f"Lỗi API Direction: {response.status_code} - {response.text}"
+
+address_data = {"origin": None, "destination": None}
+
+def process_direction(command):
+    global address_data
+
+    pattern = r"từ\s+(.+?)\s+(đến|tới)\s+(.+)"
+    match = re.search(pattern, command)
+
+    if match:
+        origin_address = match.group(1).strip()
+        destination_address = match.group(3).strip()
+
+        address_data["origin"] = origin_address
+        address_data["destination"] = destination_address
+
+        print(f"Đang tìm đường từ '{origin_address}' tới '{destination_address}'...")
+
+        try:
+            result = get_directions(address_data["origin"], address_data["destination"])
+            if result:
+                print(result)
+                speak(result)
+            else:
+                response = "Xin lỗi, không tìm thấy đường từ địa chỉ bạn yêu cầu. Vui lòng thử lại."
+                print(response)
+                speak(response)
+        except Exception as e:
+            response = "Có lỗi xảy ra khi tìm đường. Vui lòng thử lại sau."
+            print(f"Lỗi: {e}")
+            speak(response)
+
+    else:
+        if not address_data["origin"]:
+            response = "Vui lòng cung cấp địa điểm hiện tại của bạn:"
+            print(response)
+            speak(response)
+            address_data["origin"] = listen_command().strip()
+
+        if not address_data["destination"]:
+            response = "Vui lòng cung cấp địa điểm đích đến:"
+            print(response)
+            speak(response)
+            address_data["destination"] = listen_command().strip()
+
+        if address_data["origin"] and address_data["destination"]:
+            print(f"Đang tìm đường từ '{address_data['origin']}' tới '{address_data['destination']}'...")
+            try:
+                result = get_directions(address_data["origin"], address_data["destination"])
+                if result:
+                    print(result)
+                    speak(result)
+                else:
+                    response = "Xin lỗi, không tìm thấy đường từ địa chỉ bạn yêu cầu. Vui lòng thử lại."
+                    print(response)
+                    speak(response)
+            except Exception as e:
+                response = "Có lỗi xảy ra khi tìm đường. Vui lòng thử lại sau."
+                print(f"Lỗi: {e}")
+                speak(response)
+
+# process_direction("Hỏi đường từ trường đại học Bách Khoa TPHCM đến quận 9")
+# process_direction("Hỏi đường từ trường đại học Bách Khoa TPHCM tới quận 9")
+# process_direction("Hỏi đường tới quận 9")
