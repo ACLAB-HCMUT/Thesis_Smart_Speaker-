@@ -121,7 +121,7 @@ def process_command(command):
         if query:
             video_url = search_youtube(query)
             if video_url:
-                # speak(f"Mời bạn nghe nhạc {query}.")
+                speak(f"Mời bạn nghe nhạc {query}.")
                 download_and_play_youtube_audio(video_url)
             else:
                 speak("Không tìm thấy bài hát trên YouTube.")
