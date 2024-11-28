@@ -9,12 +9,16 @@ def add_alarm_to_cron(minute, hour, day, month, comment=None):
     cron_command = f'{minute} {hour} {day} {month} * DISPLAY=:0 XDG_RUNTIME_DIR=/run/user/\$(id -u) /usr/bin/aplay {sound_file_path}' # # comment
     os.system(f'(crontab -l; echo "{cron_command}") | crontab -')
     return f"Báo thức đã được thêm vào với tên '{comment}'."
+def stop_alarm_sound():
+    os.system("pkill -f aplay")
 
 def remove_alarm_from_cron(comment=None):
     if not comment:
+        stop_alarm_sound()
         os.system("crontab -r")  
         return "Tất cả báo thức đã bị xóa."
     else:
+        stop_alarm_sound()
         os.system(f'crontab -l | grep -v "# {comment}" | crontab -')
         return f"Báo thức với tên '{comment}' đã được xóa."
 
