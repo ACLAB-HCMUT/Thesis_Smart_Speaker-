@@ -73,3 +73,22 @@ def listen_command_google(max_attempts=2):
             speak("Tôi không nghe rõ, vui lòng thử lại.")
     speak("Hẹn gặp lại")
     return None
+
+def standalone_listen():
+    recognizer = sr.Recognizer()
+    while True:
+        with sr.Microphone() as source:
+            print("Listening........................")
+            recognizer.adjust_for_ambient_noise(source, duration=1)
+            try:
+                audio = recognizer.listen(source, timeout=60, phrase_time_limit=7)
+                command = recognizer.recognize_google(audio, language="vi-VN")
+                print(f"Lệnh của bạn: {command}")
+                return command.lower()
+            except sr.RequestError as e:
+                print(f"Không thể yêu cầu dịch vụ Google Speech Recognition; {e}")
+                speak("Có vấn đề với kết nối mạng, vui lòng kiểm tra kết nối mạng.")
+                return None
+            except sr.UnknownValueError:
+                print("Không thể nhận diện giọng nói. Vui lòng thử lại.")
+                continue

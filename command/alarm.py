@@ -8,7 +8,7 @@ def add_alarm_to_cron(minute, hour, day, month, comment=None):
     
     cron_command = f'{minute} {hour} {day} {month} * DISPLAY=:0 XDG_RUNTIME_DIR=/run/user/\$(id -u) /usr/bin/aplay {sound_file_path}' # # comment
     os.system(f'(crontab -l; echo "{cron_command}") | crontab -')
-    return f"Báo thức đã được thêm vào với tên '{comment}'."
+    return f"Báo thức đã được thêm vào với tên 'Báo thức {hour}:{minute} - Ngày {day} tháng {month}'."
 def stop_alarm_sound():
     os.system("pkill -f aplay")
 
@@ -78,6 +78,7 @@ def alarm_reminder_action(text):
     r'\b(?:xóa|hủy)\s+tất\s+cả\s+báo\s+thức\b', 
     text, re.IGNORECASE
     )
+    turn_off_alarm_match = re.search(r'\b(tắt|dừng|hủy|hủy bỏ|tắt)\s+báo\s+thức\b', text, re.IGNORECASE)
     if set_match:
         time_expression = set_match.group(1)
         try:
@@ -85,6 +86,8 @@ def alarm_reminder_action(text):
             return add_alarm_to_cron(minute, hour, day, month)
         except ValueError:
             return "Thời gian báo thức không hợp lệ. Vui lòng kiểm tra lại."
+    elif turn_off_alarm_match:
+        return remove_alarm_from_cron()
     elif delete_all_match:
         return remove_alarm_from_cron()
     elif delete_match:

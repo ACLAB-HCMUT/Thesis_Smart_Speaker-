@@ -39,6 +39,15 @@ def process_command(command):
         speak(get_calendar_events())
     elif any(
         keyword in command
+        for keyword in ["báo thức", "nhắc nhở", "hẹn giờ", "alarm", "reminder"]
+    ):
+        print ("process:", command)
+        response = alarm_reminder_action(command)
+        print(response)
+        speak(response)
+        return 1
+    elif any(
+        keyword in command
         for keyword in [
             "bây giờ là mấy giờ",
             "mấy giờ rồi",
@@ -199,15 +208,7 @@ def process_command(command):
         tavily_answer = search_and_summarize(command)
         speak(tavily_answer)
         print(f"Final Answer: {tavily_answer}")
-    elif any(
-        keyword in command
-        for keyword in ["báo thức", "nhắc nhở", "hẹn giờ", "alarm", "reminder"]
-    ):
-        print ("process:", command)
-        response = alarm_reminder_action(command)
-        print(response)
-        speak(response)
-        return 1
+    
     elif any(
         keyword in command
         for keyword in [
