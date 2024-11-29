@@ -13,7 +13,6 @@ from kid import play_sound_animal, play_story_sound
 from direction import process_direction
 from math_calculation import math_calculation
 
-from listen import listen_command
 def process_command(command):
     global music_process
     global default_voice
@@ -22,13 +21,16 @@ def process_command(command):
         for keyword in ["giọng nữ", "giọng con gái", "giọng đàn bà", "giọng phụ nữ"]
     ):
         set_default_voice("female")
+        return 
     elif any(
         keyword in command
         for keyword in ["giọng nam", "giọng con trai", "giọng đàn ông"]
     ):
         set_default_voice("male")
+        return
     elif "giọng mặc định" in command:
         set_default_voice("default")
+        return
     if any(
         keyword in command
         for keyword in ["lấy lịch", "xem lịch", "hiển thị lịch", "danh sách sự kiện"]

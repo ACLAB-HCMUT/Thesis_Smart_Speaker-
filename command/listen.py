@@ -4,7 +4,7 @@ import os
 from google.cloud import speech
 from microphone_stream import MicrophoneStream  
 MYKEY_PATH = os.path.join(os.getcwd(), "my_key.json")
-def listen_commands(max_attempts=2):
+def listen_command(max_attempts=2):
     recognizer = sr.Recognizer()
     attempts = 0
     while attempts < max_attempts:
@@ -37,7 +37,7 @@ def load_google_credentials():
         raise FileNotFoundError(f"Không tìm thấy file credentials tại: {credentials_path}")
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credentials_path
 
-def listen_command(max_attempts=2):
+def listen_command_google(max_attempts=2):
     load_google_credentials() 
     client = speech.SpeechClient()
 
