@@ -3,10 +3,11 @@ from playsound import playsound
 from speak import speak
 import random
 import subprocess
-import threading
-from listen import listen_command
+from listen import standalone_listen  
 SOUND_FOLDER = "sound/animals"
 SOUND_FOLDER_STORIES = "sound/story"
+
+
 def play_sound_animal(command):
     animals = {
         "mèo": "cat.mp3",
@@ -49,28 +50,13 @@ def play_sound_animal(command):
         response = "Không xác định được con vật nào. Vui lòng thử lại với tên con vật cụ thể."
         print(response)
         speak(response)
+
+
 story_process = None
-stop_listening = False  
-
-def listen_for_stop_story_command():
-    global stop_listening
-    while not stop_listening:  
-        command = listen_command()  
-        if command and ("dừng câu chuyện" in command or "tắt câu chuyện" in command or "tắt" in command):
-            stop_story_sound()  
-            stop_listening = True  
-
-def start_listening_for_stop_story():
-    global stop_listening
-    if not stop_listening:  
-        stop_listening = False
-        stop_thread = threading.Thread(target=listen_for_stop_story_command)
-        stop_thread.start()
 
 def play_story_sound():
     global story_process
     try:
-        
         sound_files = [file for file in os.listdir(SOUND_FOLDER_STORIES) if file.endswith(".mp3") or file.endswith(".wav")]
         
         if not sound_files:
@@ -82,18 +68,26 @@ def play_story_sound():
         sound_path = os.path.join(SOUND_FOLDER_STORIES, selected_sound)
 
         print(f"Đang phát câu chuyện: {selected_sound}")
+        
         story_process = subprocess.Popen(["ffplay", "-nodisp", "-autoexit", sound_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-        start_listening_for_stop_story()  
+        listen_for_stop_command()  
 
     except Exception as e:
         print(f"Lỗi khi phát âm thanh câu chuyện: {e}")
         speak("Đã xảy ra lỗi khi kể chuyện.")
 
+def listen_for_stop_command():
+    while story_process.poll() is None:  
+        command = standalone_listen()  
+        if command and ("dừng câu chuyện" in command or "tắt câu chuyện" in command or "tắt" in command):
+            stop_story_sound()  
+            break
+
 def stop_story_sound():
     global story_process
     if story_process and story_process.poll() is None:  
-        story_process.terminate()  
+        story_process.terminate() 
         print("Câu chuyện đã được dừng.")
         speak("Câu chuyện đã dừng.")
         story_process = None
