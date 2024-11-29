@@ -13,7 +13,6 @@ from kid import play_sound_animal, play_story_sound
 from direction import process_direction
 from math_calculation import math_calculation
 
-from listen import listen_command
 def process_command(command):
     global music_process
     global default_voice
@@ -22,19 +21,31 @@ def process_command(command):
         for keyword in ["giọng nữ", "giọng con gái", "giọng đàn bà", "giọng phụ nữ"]
     ):
         set_default_voice("female")
+        return 
     elif any(
         keyword in command
         for keyword in ["giọng nam", "giọng con trai", "giọng đàn ông"]
     ):
         set_default_voice("male")
+        return
     elif "giọng mặc định" in command:
         set_default_voice("default")
+        return
     if any(
         keyword in command
         for keyword in ["lấy lịch", "xem lịch", "hiển thị lịch", "danh sách sự kiện"]
     ):
         print("Đang lấy danh sách sự kiện...")
         speak(get_calendar_events())
+    elif any(
+        keyword in command
+        for keyword in ["báo thức", "nhắc nhở", "hẹn giờ", "alarm", "reminder"]
+    ):
+        print ("process:", command)
+        response = alarm_reminder_action(command)
+        print(response)
+        speak(response)
+        return 1
     elif any(
         keyword in command
         for keyword in [
@@ -197,15 +208,7 @@ def process_command(command):
         tavily_answer = search_and_summarize(command)
         speak(tavily_answer)
         print(f"Final Answer: {tavily_answer}")
-    elif any(
-        keyword in command
-        for keyword in ["báo thức", "nhắc nhở", "hẹn giờ", "alarm", "reminder"]
-    ):
-        print ("process:", command)
-        response = alarm_reminder_action(command)
-        print(response)
-        speak(response)
-        return 1
+    
     elif any(
         keyword in command
         for keyword in [

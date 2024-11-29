@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 import subprocess
 import threading
-from listen import listen_command
+from listen import standalone_listen
 load_dotenv()
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
@@ -40,7 +40,7 @@ def stop_music():
         print("Không có nhạc đang phát.")
 def listen_for_stop_command():
     while True:
-        command = listen_command()  
+        command = standalone_listen()  
         if command and ("dừng nhạc" in command or "tắt nhạc" in command or "tắt" in command):
             stop_music()  
             break

@@ -4,7 +4,7 @@ import os
 from google.cloud import speech
 from microphone_stream import MicrophoneStream  
 MYKEY_PATH = os.path.join(os.getcwd(), "my_key.json")
-def listen_commands(max_attempts=2):
+def listen_command(max_attempts=2):
     recognizer = sr.Recognizer()
     attempts = 0
     while attempts < max_attempts:
@@ -37,7 +37,7 @@ def load_google_credentials():
         raise FileNotFoundError(f"Không tìm thấy file credentials tại: {credentials_path}")
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credentials_path
 
-def listen_command(max_attempts=2):
+def listen_command_google(max_attempts=2):
     load_google_credentials() 
     client = speech.SpeechClient()
 
@@ -73,3 +73,22 @@ def listen_command(max_attempts=2):
             speak("Tôi không nghe rõ, vui lòng thử lại.")
     speak("Hẹn gặp lại")
     return None
+
+def standalone_listen():
+    recognizer = sr.Recognizer()
+    while True:
+        with sr.Microphone() as source:
+            print("Listening........................")
+            recognizer.adjust_for_ambient_noise(source, duration=1)
+            try:
+                audio = recognizer.listen(source, timeout=60, phrase_time_limit=7)
+                command = recognizer.recognize_google(audio, language="vi-VN")
+                print(f"Lệnh của bạn: {command}")
+                return command.lower()
+            except sr.RequestError as e:
+                print(f"Không thể yêu cầu dịch vụ Google Speech Recognition; {e}")
+                speak("Có vấn đề với kết nối mạng, vui lòng kiểm tra kết nối mạng.")
+                return None
+            except sr.UnknownValueError:
+                print("Không thể nhận diện giọng nói. Vui lòng thử lại.")
+                continue
