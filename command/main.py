@@ -8,6 +8,7 @@ from listen import listen_command
 from playsound import playsound
 from speak import speak
 import re
+import cProfile
 WELCOME_SOUND="sound/welcome.mp3"
 def main():
 	end_keywords_pattern = re.compile(r"\b(hết rồi|hết|kết|kết thúc|cảm ơn|thanks|thank you)\b", re.IGNORECASE)
@@ -41,4 +42,4 @@ def main():
 			speak(follow_up)
 
 if __name__ == "__main__":
-    main()
+    cProfile.run('main()','profile_output.txt')
