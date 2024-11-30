@@ -4,15 +4,15 @@ from is_device import is_device_command
 from speak import speak, set_default_voice
 from fine_tuning import fine_tuning_response
 from search_agent import search_and_summarize
-from alarm import *
-from music import *
-from notification import *
+from alarm import alarm_reminder_action
+from music import search_youtube,download_and_play_youtube_audio,stop_music
+# from notification import *
 from my_calendar import get_calendar_events, input_for_add_event,extract_time_from_command,delete_event_by_name_or_time,extract_event_name_from_command
 from ask_time import get_current_time
 from kid import play_sound_animal, play_story_sound
 from direction import process_direction
 from math_calculation import math_calculation
-
+import re
 def process_command(command):
     global music_process
     global default_voice
@@ -96,17 +96,17 @@ def process_command(command):
         # start_time = "2024-11-24T10:00:00+07:00"
         # end_time = "2024-11-24T11:00:00+07:00"
         # add_event(summary, location, description, start_time, end_time)
-    elif "bật cảm biến" in command or "tắt cảm biến" in command:
-        if "độ ẩm" in command:
-            if "bật" in command:
-                set_sensor_status(MOISTURE_FEED, True)
-            elif "tắt" in command:
-                set_sensor_status(MOISTURE_FEED, False)
-        elif "nhiệt độ" in command:
-            if "bật" in command:
-                set_sensor_status(TEMPERATURE_FEED, True)
-            elif "tắt" in command:
-                set_sensor_status(TEMPERATURE_FEED, False)
+    # elif "bật cảm biến" in command or "tắt cảm biến" in command:
+    #     if "độ ẩm" in command:
+    #         if "bật" in command:
+    #             set_sensor_status(MOISTURE_FEED, True)
+    #         elif "tắt" in command:
+    #             set_sensor_status(MOISTURE_FEED, False)
+    #     elif "nhiệt độ" in command:
+    #         if "bật" in command:
+    #             set_sensor_status(TEMPERATURE_FEED, True)
+    #         elif "tắt" in command:
+    #             set_sensor_status(TEMPERATURE_FEED, False)
     elif "âm lượng" in command or "loa" in command:
         volume_level = re.search(r"\d+", command)
         if volume_level:
