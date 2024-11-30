@@ -3,10 +3,8 @@ from playsound import playsound
 from pydub import AudioSegment
 from google.cloud import texttospeech
 import os
-from dotenv import load_dotenv
-load_dotenv()
 SOUND_PATH = "sound/command.mp3" 
-MYKEY_PATH = os.path.join(os.getcwd(), "my_key.json")
+MYKEY_PATH = "my_key.json"
 
 default_voice="default"
 def load_google_credentials():
