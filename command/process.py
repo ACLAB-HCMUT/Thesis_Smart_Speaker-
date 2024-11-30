@@ -209,34 +209,34 @@ def process_command(command):
         speak(tavily_answer)
         print(f"Final Answer: {tavily_answer}")
     
-    elif any(
-        keyword in command
-        for keyword in [
-            "căn",
-            "giai thừa",
-            "đạo hàm",
-            "tích phân",
-            "bình phương",
-            "phép tính",
-            "chia",
-            "nhân",
-            "cộng",
-            "trừ",
-            "hàm số mũ",
-            "logarit",
-            "lập phương",
-            "+",
-            "/",
-            "x",
-        ]
-    ):
-        try:
-            result = math_calculation(command)
-            print(f"Kết quả toán học: {result}")
-            speak(result)
-        except Exception as e:
-            print(f"Lỗi xử lý toán học: {e}")
-            speak("Xin lỗi, tôi không thể xử lý phép toán này.")
+    # elif any(
+    #     keyword in command
+    #     for keyword in [
+    #         "căn",
+    #         "giai thừa",
+    #         "đạo hàm",
+    #         "tích phân",
+    #         "bình phương",
+    #         "phép tính",
+    #         "chia",
+    #         "nhân",
+    #         "cộng",
+    #         "trừ",
+    #         "hàm số mũ",
+    #         "logarit",
+    #         "lập phương",
+    #         "+",
+    #         "/",
+    #         "x",
+    #     ]
+    # ):
+    #     try:
+    #         result = math_calculation(command)
+    #         print(f"Kết quả toán học: {result}")
+    #         speak(result)
+    #     except Exception as e:
+    #         print(f"Lỗi xử lý toán học: {e}")
+    #         speak("Xin lỗi, tôi không thể xử lý phép toán này.")
     else:
         print("Gửi yêu cầu đến ChatGPT API...")
         chatgpt_answer = chatgpt_response(command)
