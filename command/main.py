@@ -17,20 +17,18 @@ def main():
 
     import_thread = threading.Thread(target=import_modules)
     import_thread.start()
-
     end_keywords_pattern = re.compile(r"\b(hết rồi|hết|kết|kết thúc|cảm ơn|thanks|thank you)\b", re.IGNORECASE)
     greetings = ["Em nghe", "Dạ", "Có em", "Vâng, em nghe"]
     follow_up_questions = [
         "Bạn cần gì thêm ạ?",
-        "Tôi có thể giúp gì nữa ạ?",
+        "Em có thể giúp gì nữa ạ?",
     ]
 
     playsound(WELCOME_SOUND)
     # monitor_temperature()
     # monitor_moisture()
-    import_thread.join()
-    print("finish importing-------------------------")
     greeting = random.choice(greetings)
+    import_thread.join()
     speak(greeting)
     while True:
         command = listen_command()

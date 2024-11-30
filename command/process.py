@@ -33,7 +33,7 @@ def process_command(command):
         return
     if any(
         keyword in command
-        for keyword in ["lấy lịch", "xem lịch", "hiển thị lịch", "danh sách sự kiện"]
+        for keyword in ["lấy lịch", "xem lịch", "hiển thị lịch", "danh sách sự kiện", "xem sự kiện"]
     ):
         print("Đang lấy danh sách sự kiện...")
         speak(get_calendar_events())
