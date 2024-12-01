@@ -4,6 +4,7 @@ import os
 from google.cloud import speech
 from microphone_stream import MicrophoneStream 
 from lms_filter import *
+import time
 MYKEY_PATH = os.path.join(os.getcwd(), "my_key.json")
 # def listen_command(max_attempts=2):
 #     recognizer = sr.Recognizer()
@@ -75,7 +76,7 @@ def load_google_credentials():
         raise FileNotFoundError(f"Không tìm thấy file credentials tại: {credentials_path}")
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credentials_path
 
-def listen_command_google(max_attempts=2):
+def listen_commands(max_attempts=2, timeout_duration=7):
     load_google_credentials() 
     client = speech.SpeechClient()
 
@@ -93,7 +94,7 @@ def listen_command_google(max_attempts=2):
     while attempts < max_attempts:
         try:
             print("Listening........................")
-            audio_stream = MicrophoneStream(16000, 1024) 
+            audio_stream = MicrophoneStream(16000, 1024, timeout_duration)  
             with audio_stream as stream:
                 audio_generator = stream.generator()
                 requests = (speech.StreamingRecognizeRequest(audio_content=content)
@@ -105,13 +106,19 @@ def listen_command_google(max_attempts=2):
                         command = response.results[0].alternatives[0].transcript
                         print(f"Lệnh của bạn: {command}")
                         return command.lower()
+
+                if time.time() - audio_stream.start_time > timeout_duration:
+                    speak("Bạn nói gì tôi nghe không rõ.")
+                    attempts += 1
+                    continue  
+
         except Exception as e:
             attempts += 1
             print(f"Lỗi: {e}")
             speak("Tôi không nghe rõ, vui lòng thử lại.")
+
     speak("Hẹn gặp lại")
     return None
-
 def standalone_listen():
     recognizer = sr.Recognizer()
     while True:
