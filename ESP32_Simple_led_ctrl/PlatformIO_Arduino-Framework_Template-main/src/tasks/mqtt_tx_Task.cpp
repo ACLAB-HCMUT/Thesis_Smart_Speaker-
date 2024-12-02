@@ -1,45 +1,41 @@
 #include "mqtt_tx_Task.h"
-#include <Arduino.h>
-#include <WiFi.h>
-#include <PubSubClient.h>
 #include "temp_Task.h"
 
 // MQTT server details
 const char* mqtt_txServer = "io.adafruit.com";
 const int mqtt_txPort = 1883;
 const char* mqtt_txUser = "duongwt16";
-const char* mqtt_txKey = "aio_jhVF48MzfamQgz6wSIwMH0rqIXYm";
+const char* mqtt_txKey = "aio_qjYd85z1Od2dcJ6cDOlJw12EJzOM";
 
 // Feed names
 const char* tx_feedNames[] = {
     "duongwt16/feeds/bedroom.mois",
-    "duongwt16/feeds/bedroom.temp",
-    "duongwt16/feeds/living-room.mois",
-    "duongwt16/feeds/living-room.temp"
+    "duongwt16/feeds/bedroom.temp"
 };
 
 const unsigned long publishInterval = 10000; // 10 seconds
 WiFiClient espClient;
-PubSubClient mqtt_txClient(espClient);
+Adafruit_MQTT_Client mqtt_txClient(&espClient, mqtt_txServer, mqtt_txPort, mqtt_txUser, mqtt_txKey);
 
-void publishToFeed(const char* topic, const char* payload) {
-    if (mqtt_txClient.connected()) {
-        mqtt_txClient.publish(topic, payload);
-    } else {
-        Serial.println("MQTT client not connected");
+Adafruit_MQTT_Publish moisFeed = Adafruit_MQTT_Publish(&mqtt_txClient, tx_feedNames[0]);
+Adafruit_MQTT_Publish tempFeed = Adafruit_MQTT_Publish(&mqtt_txClient, tx_feedNames[1]);
+
+void publishToFeed(Adafruit_MQTT_Publish &feed, const char* payload) {
+    if (!feed.publish(payload)) {
+        Serial.println("Failed to publish");
     }
 }
 
 void reconnect() {
-    while (!mqtt_txClient.connected()) {
+    while (mqtt_txClient.connected() == 0) {
         // Serial.print("Attempting MQTT connection...");
-        if (mqtt_txClient.connect("ESP32Client", mqtt_txUser, mqtt_txKey)) {
-            //Serial.println("connected");
+        if (mqtt_txClient.connect()) {
+            Serial.println("connected");
         } else {
-            // Serial.print("failed, rc=");
-            // Serial.print(mqtt_txClient.state());
-            //Serial.println(" try again in 5 seconds");
-            delay(1000);
+            Serial.print("failed");
+            Serial.print(mqtt_txClient.connectErrorString(mqtt_txClient.connect()));
+            Serial.println(" try again in 5 seconds");
+            vTaskDelay(5000/portTICK_PERIOD_MS); // Wait 5 seconds before retrying
         }
     }
 }
@@ -47,13 +43,14 @@ void reconnect() {
 void mqtt_txTask(void *pvParameters) {
     unsigned long lastPublishTime = 0;
     while (true) {
-        if (!mqtt_txClient.connected()) {
+        if (mqtt_txClient.connected() == 0) {
             reconnect();
         }
-        mqtt_txClient.loop();
+        mqtt_txClient.processPackets(10000);
+        mqtt_txClient.ping();
 
-        float mois = getTemp();
-        float temp = getMois();
+        float mois = getMois();
+        float temp = getTemp();
         
         char moisStr[8];
         char tempStr[8];
@@ -65,19 +62,13 @@ void mqtt_txTask(void *pvParameters) {
         
         if (currentTime - lastPublishTime >= publishInterval) {
             lastPublishTime = currentTime;
-            for (int i = 0; i < sizeof(tx_feedNames) / sizeof(tx_feedNames[0]); i++) {
-                if (strstr(tx_feedNames[i], "mois") != NULL) {
-                    publishToFeed(tx_feedNames[i], moisStr);
-                } else if (strstr(tx_feedNames[i], "temp") != NULL) {
-                    publishToFeed(tx_feedNames[i], tempStr);
-                }
-            }
+            publishToFeed(moisFeed, moisStr);
+            publishToFeed(tempFeed, tempStr);
         }
         vTaskDelay(100 / portTICK_PERIOD_MS); // Delay to prevent task from hogging the CPU
     }
 }
 
 void createMQTT_TX() {
-    mqtt_txClient.setServer(mqtt_txServer, mqtt_txPort);
     xTaskCreate(mqtt_txTask, "MQTT_tx Task", 4096, NULL, 1, NULL);
 }
