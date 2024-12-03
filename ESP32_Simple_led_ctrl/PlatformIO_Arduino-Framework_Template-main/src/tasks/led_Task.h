@@ -9,7 +9,12 @@
 #include <Adafruit_NeoPixel.h>
 
 
-extern Adafruit_NeoPixel pixels;
-// Hàm khởi tạo task nhận input từ Serial để điều khiển LED
-void led_handle(int ledIndex, const char* message);
+extern Adafruit_NeoPixel pixels1;
+extern Adafruit_NeoPixel pixels2;
+
+
+void led_handle1(int ledIndex, const char* message);
+void led_handle2(int ledIndex, const char* message);
+
+
 #endif // LED_TASK_H
