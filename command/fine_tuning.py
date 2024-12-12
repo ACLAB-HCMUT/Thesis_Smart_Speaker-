@@ -3,7 +3,7 @@ import json
 import os
 from control import control_device
 from dotenv import load_dotenv
-from speak import speak
+# from speak import speak
 load_dotenv()
 API_KEY = os.getenv('API_FT_KEY')
 adafruit_base_url = "https://io.adafruit.com/api/feeds"
@@ -117,7 +117,7 @@ def control(command):
                 print(device_code)
                 print(action_value)
                 control_device(action_value,device_code)
-            speak("Em đã thực hiện lệnh ạ.")
+            # speak("Em đã thực hiện lệnh ạ.")
             return 1
         else:
             return 0
