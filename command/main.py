@@ -20,7 +20,6 @@ def main():
     end_keywords_pattern = re.compile(r"\b(hết rồi|hết|kết|kết thúc|cảm ơn|thanks|thank you)\b", re.IGNORECASE)
     greetings = ["Em nghe", "Dạ", "Có em ạ", "Vâng, em nghe"]
     follow_up_questions = [
-        "Bạn cần gì thêm ạ?",
         "Em có thể giúp gì nữa ạ?",
     ]
 

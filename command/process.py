@@ -10,17 +10,74 @@ from my_calendar import get_calendar_events, input_for_add_event,extract_time_fr
 from ask_time import get_current_time
 from kid import play_sound_animal, play_story_sound
 from direction import process_direction
-from math_calculation import math_calculation
+# from math_calculation import math_calculation
 from fine_tuning import control
 import re
 def process_command(command):
     global music_process
     global default_voice
-    check=control(command)
-    if check==1:
-        return 1
+    if is_device_command(command):
+        actions = {
+            'bật': 'on',
+            'mở': 'on',
+            'tắt': 'off',
+            'đóng': 'off'
+        }
+        devices = {
+            'đèn': 'led1',
+            'quạt': 'fan',  
+            'cửa': 'door',
+            'máy lạnh': 'ac'
+        }
+        rooms = ['phòng khách', 'phòng ngủ', 'phòng bếp']
 
-    if any(
+        room_pattern = r'\b(' + '|'.join(rooms) + r')\b'
+        device_pattern = r'\b(' + '|'.join(devices) + r')\b'
+        action_pattern = r'\b(' + '|'.join(actions.keys()) + r')\b'
+
+        room_match = re.search(room_pattern, command, re.IGNORECASE)
+        device_match = re.search(device_pattern, command, re.IGNORECASE)
+        action_match = re.search(action_pattern, command, re.IGNORECASE)
+        response=""
+        
+        # case 1: full command
+        if room_match and device_match and action_match:
+            check=control(command)
+            # if check==1:
+            #     return 1 
+            response="Em đã thực hiện lệnh ạ."           
+        # case 2: missing device, but room, action are present
+        elif room_match and action_match and not device_match:
+            room = room_match.group(0)
+            action = actions[action_match.group(0).lower()]
+            response=f"Vui lòng chỉ định thiết bị để {action_match.group(0).lower()} ở {room}."
+
+        # case 3: missing action, but room, device are present
+        elif room_match and device_match and not action_match:
+            room = room_match.group(0)
+            device = device_match.group(0)
+            response=f"Vui lòng chỉ định hành động cho {device} ở {room}."
+        
+        # case 4: room mentioned but missing both action and device
+        elif room_match and not action_match and not device_match:
+            room = room_match.group(0)
+            response=f"Vui lòng chỉ định thiết bị và hành động ở {room}."
+        elif action_match and device_match and not room_match:
+            device = device_match.group(0)
+            action = action_match.group(0)
+            response = f"Vui lòng chỉ định phòng để {action_match.group(0).lower()} {device}."
+        elif action_match and device_match and not room_match:
+            device = device_match.group(0)
+            action = action_match.group(0)
+            response = f"Vui lòng chỉ định phòng để {action_match.group(0).lower()} {device}."
+        # case 5: command not recognized
+        else:
+            response="Lệnh không được nhận diện, vui lòng thử lại."
+        
+        print(response)
+        speak(response)
+
+    elif any(
         keyword in command
         for keyword in ["giọng nữ", "giọng con gái", "giọng đàn bà", "giọng phụ nữ"]
     ):
@@ -35,7 +92,7 @@ def process_command(command):
     # elif "giọng mặc định" in command:
     #     set_default_voice("default")
     #     return
-    if any(
+    elif any(
         keyword in command
         for keyword in ["lấy lịch", "xem lịch", "hiển thị lịch", "danh sách sự kiện", "xem sự kiện"]
     ):
