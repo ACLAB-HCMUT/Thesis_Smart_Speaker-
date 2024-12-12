@@ -2,7 +2,6 @@ from control import control_device, set_volume
 from chatgpt import chatgpt_response
 from is_device import is_device_command
 from speak import speak, set_default_voice
-from fine_tuning import fine_tuning_response
 from search_agent import search_and_summarize
 from alarm import alarm_reminder_action
 from music import search_youtube,download_and_play_youtube_audio,stop_music
@@ -12,10 +11,15 @@ from ask_time import get_current_time
 from kid import play_sound_animal, play_story_sound
 from direction import process_direction
 from math_calculation import math_calculation
+from fine_tuning import control
 import re
 def process_command(command):
     global music_process
     global default_voice
+    check=control(command)
+    if check==1:
+        return 1
+
     if any(
         keyword in command
         for keyword in ["giọng nữ", "giọng con gái", "giọng đàn bà", "giọng phụ nữ"]
@@ -28,9 +32,9 @@ def process_command(command):
     ):
         set_default_voice("male")
         return
-    elif "giọng mặc định" in command:
-        set_default_voice("default")
-        return
+    # elif "giọng mặc định" in command:
+    #     set_default_voice("default")
+    #     return
     if any(
         keyword in command
         for keyword in ["lấy lịch", "xem lịch", "hiển thị lịch", "danh sách sự kiện", "xem sự kiện"]

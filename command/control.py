@@ -8,7 +8,7 @@ AIO_KEY = os.getenv("AIO_KEY")
 aio = Client(AIO_USERNAME, AIO_KEY)
 
 def control_device(action,feed_name): 
-    value = "ON" if action == 'on' else "OFF"
+    value =1 if action == 'on' else 0
     aio.send_data(feed_name, value)
     print(f"Đã gửi lệnh {value} tới feed '{feed_name}'.")
 
