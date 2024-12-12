@@ -1,10 +1,11 @@
 import requests
 import json
 import os
-from control import control
+from control import control_device
 from dotenv import load_dotenv
+from speak import speak
 load_dotenv()
-API_KEY = os.getenv('API_KEY')
+API_KEY = os.getenv('API_FT_KEY')
 adafruit_base_url = "https://io.adafruit.com/api/feeds"
 
 action_on = "1001"  # Bật
@@ -14,11 +15,6 @@ fan_code = "4203"  # Quạt
 living_room_code = "7106"  # Phòng khách
 bedroom_code = "7206"  
 sub_light_code = "4104"
-
-def control_device(device_code, value):
-    url = f"{adafruit_base_url}/{device_code}/data.json"
-    print(url)
-    
 
 api_key = API_KEY
 
@@ -118,8 +114,8 @@ def control(command):
                 print("-----------------")
                 print(device_code)
                 print(action_value)
-                control_device(device_code, action_value)
-            
+                control_device(action_value,device_code)
+            speak("Em đã thực hiện lệnh ạ.")
             return 1
         else:
             return 0
@@ -129,3 +125,5 @@ def control(command):
         return 0
         print(f"Lỗi khi gửi yêu cầu: {response.status_code}")
 
+
+# print(control("tắt đèn phòng khách"))

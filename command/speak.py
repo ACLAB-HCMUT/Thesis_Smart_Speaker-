@@ -94,13 +94,14 @@ def speak(text):
             speak_male(text)
         elif default_voice == "female":
             speak_female(text)
-        else:  
-            tts = gTTS(text=text, lang='vi')
-            tts.save(SOUND_PATH)
-            audio = AudioSegment.from_file(SOUND_PATH)
-            audio = audio.speedup(playback_speed=1.25)
-            audio.export(SOUND_PATH, format="mp3")
-            playsound(SOUND_PATH)
+        else:
+            speak_female(text)
+            # tts = gTTS(text=text, lang='vi')
+            # tts.save(SOUND_PATH)
+            # audio = AudioSegment.from_file(SOUND_PATH)
+            # audio = audio.speedup(playback_speed=1.25)
+            # audio.export(SOUND_PATH, format="mp3")
+            # playsound(SOUND_PATH)
     except Exception as e:
         print(f"Lỗi: {e}")
 
