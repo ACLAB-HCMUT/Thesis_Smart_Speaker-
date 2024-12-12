@@ -46,21 +46,23 @@ def control(command):
         if 'choices' in response_data and len(response_data['choices']) > 0:
             content = response_data['choices'][0]['message']['content']
             print("-----------------------------------response:",content )
-           
-            action = content.split(';')[0].split(':')[1].strip()
-            device = content.split(';')[1].split(':')[1].strip()
-            location = content.split(';')[2].split(':')[1].strip()
+            try:
+                action = content.split(';')[0].split(':')[1].strip()
+                device = content.split(';')[1].split(':')[1].strip()
+                location = content.split(';')[2].split(':')[1].strip()
 
            
-            actions=action.split(',') 
-            devices=device.split(',')
-            locations=location.split(',')
+                actions=action.split(',') 
+                devices=device.split(',')
+                locations=location.split(',')
 
-            
-            print(f"Actions array: {actions}")
-            print(f"Devices array: {devices}")
-            print(f"Locations array: {locations}")
-
+                
+                print(f"Actions array: {actions}")
+                print(f"Devices array: {devices}")
+                print(f"Locations array: {locations}")
+            except IndexError as e:
+                print(f"Error processing response content: {e}")
+                return 0  
             
             for i in range(max(len(actions), len(devices), len(locations))):
                 

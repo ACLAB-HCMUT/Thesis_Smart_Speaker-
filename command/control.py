@@ -23,6 +23,6 @@ def control_volume(payload):
 
 
 def set_volume(volume_level):
-    feed_name = "volume"
+    feed_name = "speaker.volume"
     aio.send_data(feed_name, volume_level)  
     control_volume(volume_level)  
