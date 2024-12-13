@@ -66,8 +66,9 @@ def download_and_play_youtube_audio(video_url):
             'noplaylist': True,
             'no_part': True,
             'audioquality': 1,
-
-                                     
+            'quiet': True,
+            'no_warnings': True,
+            'ignoreerrors': True,                      
         }
         
         with YoutubeDL(options) as ydl:

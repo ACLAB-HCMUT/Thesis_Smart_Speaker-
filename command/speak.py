@@ -42,7 +42,6 @@ def speak_female(text):
         output_file = SOUND_PATH
         with open(output_file, "wb") as out:
             out.write(response.audio_content)
-        # print(f"Giọng nói đã được lưu vào file: {output_file}")
 
         playsound(output_file)
 
