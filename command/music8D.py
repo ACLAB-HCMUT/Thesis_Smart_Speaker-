@@ -1,4 +1,3 @@
-# music.py
 from yt_dlp import YoutubeDL
 from googleapiclient.discovery import build
 import os
@@ -33,7 +32,6 @@ def search_youtube8(query):
         print("Lỗi khi tìm kiếm YouTube:", e)
         return None
 
-# Biến toàn cục để quản lý âm thanh 8D hiện tại
 current_eight_d_audio = None
 
 def stop_music8():
@@ -94,13 +92,11 @@ def download_and_play_youtube_audio8(video_url):
         audio_file = download_youtube_audio(video_url, download_path=download_path)
         print(f"Đã tải xuống âm thanh: {audio_file}")
 
-        # Phát âm thanh với hiệu ứng 8D Audio
         if current_eight_d_audio:
             current_eight_d_audio.stop()
         
         current_eight_d_audio = EightDAudio(audio_file, loops=0, fade_ms=1000, stride=0.5, speed=0.05)
         
-        # Bắt đầu lắng nghe lệnh dừng nhạc trong một luồng riêng
         stop_thread = threading.Thread(target=listen_for_stop_command)
         stop_thread.start()
         
