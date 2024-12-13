@@ -1,4 +1,4 @@
-from control import control_device, set_volume
+from control import set_volume
 from chatgpt import chatgpt_response
 from is_device import is_device_command
 from speak import speak, set_default_voice

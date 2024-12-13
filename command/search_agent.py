@@ -52,7 +52,7 @@ def search_and_summarize(query):
         print("Fetching context from Tavily...")
         context_list = search_results.get("results", [])
         if context_list:
-            context_text = "\n".join([result['content'] for result in context_list])
+            context_text = "\n".join([result['content'] for result in context_list[:1]])
             print("Summarizing information with ChatGPT...")
             return summarize_with_chatgpt(query, context_text)
         else:
