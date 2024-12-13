@@ -121,11 +121,9 @@ def control(command):
             return 1
         else:
             return 0
-            print("Không có dữ liệu phản hồi hợp lệ.")
 
     else:
         return 0
-        print(f"Lỗi khi gửi yêu cầu: {response.status_code}")
 
 
 # print(control("tắt đèn phòng khách"))
