@@ -18,9 +18,8 @@ def load_google_credentials():
     
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credentials_path
     print(f"Đã load credentials từ: {credentials_path}")
-
+load_google_credentials()
 def speak_female(text):
-    load_google_credentials()
     try:
         client = texttospeech.TextToSpeechClient()
 
@@ -49,7 +48,6 @@ def speak_female(text):
         print(f"Đã xảy ra lỗi: {e}")
 
 def speak_male(text):
-    load_google_credentials()  
     try:
         client = texttospeech.TextToSpeechClient()
         input_text = texttospeech.SynthesisInput(text=text)
