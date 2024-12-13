@@ -75,9 +75,9 @@ def load_google_credentials():
     if not os.path.exists(credentials_path):
         raise FileNotFoundError(f"Không tìm thấy file credentials tại: {credentials_path}")
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credentials_path
-
+load_google_credentials() 
 def listen_command(max_attempts=2, timeout_duration=7):
-    load_google_credentials() 
+    
     client = speech.SpeechClient()
 
     config = speech.RecognitionConfig(
