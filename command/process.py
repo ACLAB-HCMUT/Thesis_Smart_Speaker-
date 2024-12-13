@@ -16,7 +16,21 @@ import re
 def process_command(command):
     global music_process
     global default_voice
-    if is_device_command(command):
+    if any(keyword in command for keyword in ["phát nhạc", "nhạc", "mở bài"]):
+
+        query = command
+        for keyword in ["phát nhạc", "mở nhạc", "mở bài"]:
+            query = query.replace(keyword, "").strip()
+        if query:
+            video_url = search_youtube(query)
+            if video_url:
+                speak(f"Mời bạn nghe nhạc {query}.")
+                download_and_play_youtube_audio(video_url)
+            else:
+                speak("Không tìm thấy bài hát trên YouTube.")
+        else:
+            speak("Vui lòng nói rõ tên bài hát bạn muốn phát.")
+    elif is_device_command(command):
         actions = {
             'bật': 'on',
             'mở': 'on',
@@ -184,20 +198,7 @@ def process_command(command):
         speak(response)
     elif any(keyword in command for keyword in ["dừng nhạc", "tắt nhạc"]):
         stop_music()
-    elif any(keyword in command for keyword in ["phát nhạc", "nhạc", "mở bài"]):
 
-        query = command
-        for keyword in ["phát nhạc", "mở nhạc", "mở bài"]:
-            query = query.replace(keyword, "").strip()
-        if query:
-            video_url = search_youtube(query)
-            if video_url:
-                speak(f"Mời bạn nghe nhạc {query}.")
-                download_and_play_youtube_audio(video_url)
-            else:
-                speak("Không tìm thấy bài hát trên YouTube.")
-        else:
-            speak("Vui lòng nói rõ tên bài hát bạn muốn phát.")
     elif "kêu" in command or ("tiếng" in command and "kêu" in command):
         play_sound_animal(command)
     elif "kể" in command and ("truyện" in command or "chuyện" in command):
