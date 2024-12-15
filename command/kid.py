@@ -6,7 +6,8 @@ import subprocess
 from listen import standalone_listen  
 SOUND_FOLDER = "sound/animals"
 SOUND_FOLDER_STORIES = "sound/story"
-
+# SOUND_FOLDER = "animals"
+# SOUND_FOLDER_STORIES = "story"
 
 def play_sound_animal(command):
     animals = {
