@@ -4,7 +4,7 @@ from is_device import is_device_command
 from speak import speak, set_default_voice
 from search_agent import search_and_summarize
 from alarm import alarm_reminder_action
-from music8D import search_youtube8,download_and_play_youtube_audio8,stop_music8
+# from music8D import search_youtube8,download_and_play_youtube_audio8,stop_music8
 from music import search_youtube,download_and_play_youtube_audio,stop_music
 # from notification import *
 from my_calendar import get_calendar_events, input_for_add_event,extract_time_from_command,delete_event_by_name_or_time,extract_event_name_from_command
@@ -20,21 +20,21 @@ def process_command(command):
     global music_process
     global default_voice
     global current_eight_d_audio
-    if any(keyword in command for keyword in ["8d", "tám đê", "8 đê"]):
+    # if any(keyword in command for keyword in ["8d","8D","tám đê", "8 đê"]):
 
-        query = command
-        for keyword in ["phát nhạc", "mở nhạc", "mở bài","8D"]:
-            query = query.replace(keyword, "").strip()
-        if query:
-            video_url = search_youtube8(query)
-            if video_url:
-                speak(f"Mời bạn nghe nhạc {query}.")
-                download_and_play_youtube_audio8(video_url)
-            else:
-                speak("Không tìm thấy bài hát trên YouTube.")
-        else:
-            speak("Vui lòng nói rõ tên bài hát bạn muốn phát.")
-    elif any(keyword in command for keyword in ["phát nhạc", "nhạc", "mở bài"]):
+    #     query = command
+    #     for keyword in ["phát nhạc", "mở nhạc", "mở bài","8D", "8d"]:
+    #         query = query.replace(keyword, "").strip()
+    #     if query:
+    #         video_url = search_youtube8(query)
+    #         if video_url:
+    #             speak(f"Mời bạn nghe nhạc {query}.")
+    #             download_and_play_youtube_audio8(video_url)
+    #         else:
+    #             speak("Không tìm thấy bài hát trên YouTube.")
+    #     else:
+    #         speak("Vui lòng nói rõ tên bài hát bạn muốn phát.")
+    if any(keyword in command for keyword in ["phát nhạc", "nhạc", "mở bài"]):
 
         query = command
         for keyword in ["phát nhạc", "mở nhạc", "mở bài"]:
@@ -132,7 +132,7 @@ def process_command(command):
         speak(get_calendar_events())
     elif any(
         keyword in command
-        for keyword in ["báo thức", "nhắc nhở", "hẹn giờ", "alarm", "reminder"]
+        for keyword in ["báo thức", "nhắc nhở", "hẹn giờ"]
     ):
         print ("process:", command)
         response = alarm_reminder_action(command)
@@ -216,7 +216,7 @@ def process_command(command):
         speak(response)
     elif any(keyword in command for keyword in ["dừng nhạc", "tắt nhạc"]):
         stop_music()
-        stop_music8()
+        # stop_music8()
 
     elif "kêu" in command or ("tiếng" in command and "kêu" in command):
         play_sound_animal(command)

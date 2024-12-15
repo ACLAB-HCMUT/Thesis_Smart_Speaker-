@@ -1,6 +1,7 @@
 import re
 from datetime import datetime, timedelta
 import os
+import pytz
 sound_file_path = "/home/johnny/capstone11/Thesis_Smart_Speaker/command/sound/alarm.wav"
 def add_alarm_to_cron(minute, hour, day, month, comment=None):
     if not comment:
@@ -8,7 +9,7 @@ def add_alarm_to_cron(minute, hour, day, month, comment=None):
     
     cron_command = f'{minute} {hour} {day} {month} * DISPLAY=:0 XDG_RUNTIME_DIR=/run/user/\$(id -u) /usr/bin/aplay {sound_file_path}' # # comment
     os.system(f'(crontab -l; echo "{cron_command}") | crontab -')
-    return f"Báo thức đã được thêm vào với tên 'Báo thức {hour}:{minute} - Ngày {day} tháng {month}'."
+    return f"Báo thức đã được thêm vào với tên 'Báo thức {hour}:{minute} phút - Ngày {day} tháng {month}'."
 def stop_alarm_sound():
     os.system("pkill -f aplay")
 
@@ -35,10 +36,34 @@ def list_alarms_from_cron():
         return f"Lỗi khi liệt kê báo thức: {e}"
 
 def parse_time_expression(time_expression):
-    now = datetime.now()
+    # now = datetime.now()
+    tz = pytz.timezone('Asia/Ho_Chi_Minh')  # Thay đổi múi giờ nếu cần
+    now = datetime.now(tz)
     
+    print("Thời gian hiện tại:", now)
+    print("Time expression nhận được:", time_expression)
+    time_expression = time_expression.lower().replace("đúng", "").strip()
+    time_expression = time_expression.lower().replace("đúng", "").replace("nữa", "").strip()
+    print("Time expression nhận được:", time_expression)
+    if re.match(r'(\d{1,2})\s*giờ\s*(\d{1,2})\s*phút', time_expression):  
+        match = re.search(r'(\d{1,2})\s*giờ\s*(\d{1,2})\s*phút', time_expression)
+        hour = int(match.group(1))
+        minute = int(match.group(2))
+        print(f"DEBUG - Khớp định dạng giờ và phút: hour = {hour}, minute = {minute}")
+        return minute, hour, now.day, now.month
     # Kiểm tra trường hợp "hh:mm"
-    if re.match(r'(\d{1,2}):(\d{2})', time_expression):  
+    # Kiểm tra trường hợp giờ và phút không có từ "phút"
+    elif re.match(r'(\d{1,2})\s*giờ\s*(\d{1,2})$', time_expression):  # Xử lý "22 giờ 10"
+        match = re.search(r'(\d{1,2})\s*giờ\s*(\d{1,2})$', time_expression)
+        hour = int(match.group(1))
+        minute = int(match.group(2))
+        print(f"DEBUG - Khớp định dạng giờ và phút không có từ 'phút': hour = {hour}, minute = {minute}")
+        return minute, hour, now.day, now.month
+    elif re.match(r'^(\d{1,2})\s*giờ(\s*đúng)?$', time_expression):
+        hour = int(re.search(r'(\d{1,2})', time_expression).group())
+        print(f"DEBUG - Khớp định dạng giờ đúng: hour = {hour}, minute = 0")
+        return 0, hour, now.day, now.month
+    elif re.match(r'(\d{1,2}):(\d{2})', time_expression):  
         hour, minute = map(int, re.findall(r'(\d{1,2}):(\d{2})', time_expression)[0])
         return minute, hour, now.day, now.month
 
@@ -67,7 +92,7 @@ def alarm_reminder_action(text):
     if re.search(r'\b(xem|danh sách|hiện tại)\s+báo\s+thức\b', text, re.IGNORECASE):
         return list_alarms_from_cron()
     set_match = re.search(
-        r'\b(?:đặt|tạo|lên lịch|báo thức|đánh thức tôi|hẹn giờ)\b.*?\b(?:lúc|trong|sau)?\s*(\d{1,2}:\d{2}|\d+\s*(?:phút|giờ))\b',
+        r'\b(?:đặt|tạo|lên lịch|báo thức|đánh thức tôi|hẹn giờ)\b.*?\b(?:lúc|trong|sau)?\s*(\d{1,2}\s*giờ\s*\d{1,2}|\d{1,2}\s*giờ|\d+\s*phút(?:\s*nữa)?)',
         text, re.IGNORECASE
     )
     delete_match = re.search(
@@ -83,6 +108,7 @@ def alarm_reminder_action(text):
         time_expression = set_match.group(1)
         try:
             minute, hour, day, month = parse_time_expression(time_expression)
+            print("minute: ",minute,"hour: ", hour, "day: ", day,"month: ", month)
             return add_alarm_to_cron(minute, hour, day, month)
         except ValueError:
             return "Thời gian báo thức không hợp lệ. Vui lòng kiểm tra lại."
@@ -97,3 +123,17 @@ def alarm_reminder_action(text):
         return remove_alarm_from_cron(comment)
     else:
         return "Không nhận diện được yêu cầu. Vui lòng thử lại."
+
+
+# alarm_reminder_action("đặt báo thức 22 giờ 10")
+# alarm_reminder_action("đặt báo thức 1 phút nữa")
+# alarm_reminder_action("đặt báo thức 22 giờ 10 phút")
+# alarm_reminder_action("đặt báo thức 22 giờ đúng")
+# alarm_reminder_action("đặt báo thức 22 giờ 0 phút")
+# alarm_reminder_action("đặt báo thức 7 giờ 10")
+# alarm_reminder_action("đặt báo thức 7 giờ 00")
+
+
+
+# alarm_reminder_action("đặt báo thức 0 giờ 60")
+
