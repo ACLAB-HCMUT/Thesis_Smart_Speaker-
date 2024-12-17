@@ -13,7 +13,15 @@ def add_alarm_to_cron(minute, hour, day, month, comment=None):
 def stop_alarm_sound():
     os.system("pkill -f aplay")
 
+def normalize_time(hour, minute):
+    additional_hours = minute // 60
+    minute = minute % 60
+    hour += additional_hours
+    hour = hour % 24  
+    return hour, minute
+
 def remove_alarm_from_cron(comment=None):
+    print("tat bao thuc------------------")
     if not comment:
         stop_alarm_sound()
         os.system("crontab -r")  
@@ -42,14 +50,64 @@ def parse_time_expression(time_expression):
     
     print("Thời gian hiện tại:", now)
     print("Time expression nhận được:", time_expression)
-    time_expression = time_expression.lower().replace("đúng", "").strip()
-    time_expression = time_expression.lower().replace("đúng", "").replace("nữa", "").strip()
+    time_expression = time_expression.lower().strip()
+    # Kiểm tra trường hợp "x tiếng y phút nữa"
+    # Kiểm tra xem có chứa "ngày mai" không
+    is_tomorrow = False
+    is_tomorrow2 = False
+    if 'ngày mai' in time_expression:
+        is_tomorrow = True
+        # Loại bỏ "ngày mai" khỏi biểu thức để xử lý phần thời gian
+        time_expression = time_expression.replace("ngày mai", "").strip()
+        is_tomorrow = False
+    elif 'ngày mốt' in time_expression:
+        is_tomorrow2 = True
+        # Loại bỏ "ngày mốt" khỏi biểu thức để xử lý phần thời gian
+        time_expression = time_expression.replace("ngày mốt", "").strip()
+    match = re.match(r'(\d{1,2})\s*tiếng\s*(\d{1,2})\s*phút\s*nữa', time_expression)
+    if match:
+        hours = int(match.group(1))
+        minutes = int(match.group(2))
+        future_time = now + timedelta(hours=hours, minutes=minutes)
+        print(f"DEBUG - Khớp định dạng 'tiếng phút nữa': hours = {hours}, minutes = {minutes}")
+        return future_time.minute, future_time.hour, future_time.day, future_time.month
+    # Kiểm tra trường hợp "1 tiếng nữa"
+    match = re.match(r'(\d{1,2})\s*tiếng\s*nữa', time_expression)
+    if match:
+        hours = int(match.group(1))
+        future_time = now + timedelta(hours=hours)
+        print(f"DEBUG - Khớp định dạng 'tiếng nữa': hours = {hours}")
+        return future_time.minute, future_time.hour, future_time.day, future_time.month
+    match = re.match(r'(\d{1,2})\s*giờ\s*(\d{1,2})\s*phút\s*nữa', time_expression)
+    if match:
+        hours = int(match.group(1))
+        minutes = int(match.group(2))
+        future_time = now + timedelta(hours=hours, minutes=minutes)
+        print(f"DEBUG - Khớp định dạng 'giờ phút nữa': hours = {hours}, minutes = {minutes}")
+        return future_time.minute, future_time.hour, future_time.day, future_time.month
+    # *Thêm kiểm tra cho trường hợp "x giờ nữa"*
+    match = re.match(r'(\d{1,2})\s*giờ\s*nữa', time_expression)
+    if match:
+        hours = int(match.group(1))
+        future_time = now + timedelta(hours=hours)
+        print(f"DEBUG - Khớp định dạng 'giờ nữa': hours = {hours}")
+        return future_time.minute, future_time.hour, future_time.day, future_time.month
+
+    # Thay thế "tiếng" bằng "giờ" cho các trường hợp khác
+    time_expression = time_expression.replace("tiếng", "giờ")
+    
+    # Loại bỏ từ "đúng" và "nữa" nếu còn
+    time_expression = time_expression.replace("đúng", "").replace("nữa", "").strip()
+    print("Time expression sau khi xử lý:", time_expression)
+ 
     print("Time expression nhận được:", time_expression)
     if re.match(r'(\d{1,2})\s*giờ\s*(\d{1,2})\s*phút', time_expression):  
         match = re.search(r'(\d{1,2})\s*giờ\s*(\d{1,2})\s*phút', time_expression)
         hour = int(match.group(1))
         minute = int(match.group(2))
+        hour, minute = normalize_time(hour, minute)
         print(f"DEBUG - Khớp định dạng giờ và phút: hour = {hour}, minute = {minute}")
+        
         return minute, hour, now.day, now.month
     # Kiểm tra trường hợp "hh:mm"
     # Kiểm tra trường hợp giờ và phút không có từ "phút"
@@ -57,12 +115,65 @@ def parse_time_expression(time_expression):
         match = re.search(r'(\d{1,2})\s*giờ\s*(\d{1,2})$', time_expression)
         hour = int(match.group(1))
         minute = int(match.group(2))
+        hour, minute = normalize_time(hour, minute)
         print(f"DEBUG - Khớp định dạng giờ và phút không có từ 'phút': hour = {hour}, minute = {minute}")
-        return minute, hour, now.day, now.month
+        # Xác định ngày và tháng
+        day = now.day
+        month = now.month
+        year = now.year
+        
+        if is_tomorrow:
+            future_date = now + timedelta(days=1)
+            day = future_date.day
+            month = future_date.month
+            year = future_date.year
+            print("DEBUG - Đặt báo thức cho ngày mai:", future_date)
+        elif is_tomorrow2:
+            future_date = now + timedelta(days=2)
+            day = future_date.day
+            month = future_date.month
+            year = future_date.year
+            print("DEBUG - Đặt báo thức cho ngày mốt:", future_date)
+        else:
+            # Kiểm tra nếu thời gian đã qua trong ngày hôm nay, có thể tự động đặt cho ngày mai
+            if hour < now.hour or (hour == now.hour and minute <= now.minute):
+                future_date = now + timedelta(days=1)
+                day = future_date.day
+                month = future_date.month
+                year = future_date.year
+                print("DEBUG - Đặt báo thức cho ngày mai vì thời gian đã qua:", future_date)
+        return minute, hour, day, month
     elif re.match(r'^(\d{1,2})\s*giờ(\s*đúng)?$', time_expression):
         hour = int(re.search(r'(\d{1,2})', time_expression).group())
+        minute=0
+        hour, minute = normalize_time(hour, minute)
         print(f"DEBUG - Khớp định dạng giờ đúng: hour = {hour}, minute = 0")
-        return 0, hour, now.day, now.month
+        # Xác định ngày và tháng
+        day = now.day
+        month = now.month
+        year = now.year
+        
+        if is_tomorrow:
+            future_date = now + timedelta(days=1)
+            day = future_date.day
+            month = future_date.month
+            year = future_date.year
+            print("DEBUG - Đặt báo thức cho ngày mai:", future_date)
+        elif is_tomorrow2:
+            future_date = now + timedelta(days=2)
+            day = future_date.day
+            month = future_date.month
+            year = future_date.year
+            print("DEBUG - Đặt báo thức cho ngày mốt:", future_date)
+        else:
+            # Kiểm tra nếu thời gian đã qua trong ngày hôm nay, có thể tự động đặt cho ngày mai
+            if hour < now.hour or (hour == now.hour and minute <= now.minute):
+                future_date = now + timedelta(days=1)
+                day = future_date.day
+                month = future_date.month
+                year = future_date.year
+                print("DEBUG - Đặt báo thức cho ngày mai vì thời gian đã qua:", future_date)
+        return 0, hour, day, month
     elif re.match(r'(\d{1,2}):(\d{2})', time_expression):  
         hour, minute = map(int, re.findall(r'(\d{1,2}):(\d{2})', time_expression)[0])
         return minute, hour, now.day, now.month
@@ -82,6 +193,7 @@ def parse_time_expression(time_expression):
     # Kiểm tra trường hợp giờ là "0 giờ"
     elif re.match(r'0\s*giờ\s*(\d+)\s*phút', time_expression):  # Xử lý "0 giờ 43 phút"
         minutes = int(re.search(r'(\d+)', time_expression).group())
+        hour, minute = normalize_time(hour, minute)
         return minutes, 0, now.day, now.month
     
     else:
@@ -91,8 +203,36 @@ def alarm_reminder_action(text):
     print("checkpoint:  ",text)
     if re.search(r'\b(xem|danh sách|hiện tại)\s+báo\s+thức\b', text, re.IGNORECASE):
         return list_alarms_from_cron()
+    # set_match = re.search(
+    #     r'\b(?:đặt|tạo|lên lịch|báo thức|đánh thức tôi|hẹn giờ)\b.*?\b(?:lúc|trong|sau)?\s*' +
+    #     r'(' +
+    #         r'\d{1,2}\s*tiếng\s*\d{1,2}\s*phút\s*nữa|' +  # "x tiếng y phút nữa"
+    #         r'\d{1,2}\s*giờ\s*\d{1,2}\s*phút\s*nữa|' +   # "x giờ y phút nữa"
+    #         r'\d{1,2}\s*tiếng\s*nữa|' +                  # "x tiếng nữa"
+    #         r'\d{1,2}\s*giờ\s*nữa|' +                    # "x giờ nữa"
+    #         r'giờ\s*này|' +                               # "giờ này"
+    #         r'\d{1,2}\s*giờ\s*đúng|' +                    # "x giờ đúng"
+    #         r'\d{1,2}\s*giờ\s*\d{1,2}|' +                 # "x giờ y"
+    #         r'\d+\s*phút(?:\s*nữa)?|' +                  # "x phút" hoặc "x phút nữa"
+    #         r'\d+:\d+' +                                  # "hh:mm"
+    #     r')',
+    #     text, re.IGNORECASE
+    # )
     set_match = re.search(
-        r'\b(?:đặt|tạo|lên lịch|báo thức|đánh thức tôi|hẹn giờ)\b.*?\b(?:lúc|trong|sau)?\s*(\d{1,2}\s*giờ\s*\d{1,2}|\d{1,2}\s*giờ|\d+\s*phút(?:\s*nữa)?)',
+        r'\b(?:đặt|tạo|lên lịch|báo thức|đánh thức tôi|hẹn giờ)\b.*?\b(?:lúc|trong|sau)?\s*' +
+        r'(' +
+            r'\d{1,2}\s*tiếng\s*\d{1,2}\s*phút\s*nữa|' +  # "x tiếng y phút nữa"
+            r'\d{1,2}\s*giờ\s*\d{1,2}\s*phút\s*nữa|' +   # "x giờ y phút nữa"
+            r'\d{1,2}\s*tiếng\s*nữa|' +                  # "x tiếng nữa"
+            r'\d{1,2}\s*giờ\s*nữa|' +                    # "x giờ nữa"
+            r'giờ\s*này|' +                               # "giờ này"
+            r'\d{1,2}\s*giờ(?:\s*đúng)?|' +                  # "x giờ đúng"
+            r'\d{1,2}\s*giờ\s*\d{1,2}|' +                 # "x giờ y"
+            r'\d+\s*phút(?:\s*nữa)?|' +                  # "x phút" hoặc "x phút nữa"
+            r'\d+:\d+' +                                  # "hh:mm"
+            r'|' +
+            r'ngày\s+mai' +                               # Thêm "ngày mai"
+        r')',
         text, re.IGNORECASE
     )
     delete_match = re.search(
@@ -108,7 +248,7 @@ def alarm_reminder_action(text):
         time_expression = set_match.group(1)
         try:
             minute, hour, day, month = parse_time_expression(time_expression)
-            print("minute: ",minute,"hour: ", hour, "day: ", day,"month: ", month)
+            # print("minute: ",minute,"hour: ", hour, "day: ", day,"month: ", month)
             return add_alarm_to_cron(minute, hour, day, month)
         except ValueError:
             return "Thời gian báo thức không hợp lệ. Vui lòng kiểm tra lại."
@@ -127,13 +267,29 @@ def alarm_reminder_action(text):
 
 # alarm_reminder_action("đặt báo thức 22 giờ 10")
 # alarm_reminder_action("đặt báo thức 1 phút nữa")
+# list_alarms_from_cron()
+# remove_alarm_from_cron()
+# list_alarms_from_cron()
+
 # alarm_reminder_action("đặt báo thức 22 giờ 10 phút")
-# alarm_reminder_action("đặt báo thức 22 giờ đúng")
+# alarm_reminder_action("đặt báo thức 22 giờ đúng ngày mai")
 # alarm_reminder_action("đặt báo thức 22 giờ 0 phút")
 # alarm_reminder_action("đặt báo thức 7 giờ 10")
 # alarm_reminder_action("đặt báo thức 7 giờ 00")
+# alarm_reminder_action("đặt báo thức 1 tiếng nữa")
 
+# alarm_reminder_action("đặt báo thức 1 giờ nữa")
+# alarm_reminder_action("đặt báo thức 1 giờ 10 phút nữa")
+# alarm_reminder_action("đặt báo thức sau 1 phút nữa")
+# alarm_reminder_action("đặt báo thức sau 1 giờ nữa")
+# alarm_reminder_action("đặt báo thức sau 1 phút ")
+# alarm_reminder_action("đặt báo thức sau 1 giờ")
+# alarm_reminder_action("đặt báo thức sau 1 giờ 10 phút")
 
+# alarm_reminder_action("đặt báo thức 1 tiếng 10 phút nữa")
 
-# alarm_reminder_action("đặt báo thức 0 giờ 60")
+# alarm_reminder_action("đặt báo thức 10 giờ 62")
 
+# alarm_reminder_action("đặt báo thức 22 giờ 10 phút ngày mai")
+# alarm_reminder_action("đặt báo thức 7 giờ ")
+# alarm_reminder_action("đặt báo thức 0 giờ ")

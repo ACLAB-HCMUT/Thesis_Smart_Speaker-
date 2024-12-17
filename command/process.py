@@ -48,6 +48,15 @@ def process_command(command):
                 speak("Không tìm thấy bài hát trên YouTube.")
         else:
             speak("Vui lòng nói rõ tên bài hát bạn muốn phát.")
+    elif any(
+        keyword in command
+        for keyword in ["báo thức", "nhắc nhở", "hẹn giờ"]
+    ):
+        print ("process:", command)
+        response = alarm_reminder_action(command)
+        print(response)
+        speak(response)
+        return 1
     elif is_device_command(command):
         actions = {
             'bật': 'on',
@@ -130,15 +139,7 @@ def process_command(command):
     ):
         print("Đang lấy danh sách sự kiện...")
         speak(get_calendar_events())
-    elif any(
-        keyword in command
-        for keyword in ["báo thức", "nhắc nhở", "hẹn giờ"]
-    ):
-        print ("process:", command)
-        response = alarm_reminder_action(command)
-        print(response)
-        speak(response)
-        return 1
+    
     elif any(
         keyword in command
         for keyword in [
