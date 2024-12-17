@@ -21,7 +21,6 @@ def normalize_time(hour, minute):
     return hour, minute
 
 def remove_alarm_from_cron(comment=None):
-    print("tat bao thuc------------------")
     if not comment:
         stop_alarm_sound()
         os.system("crontab -r")  
@@ -203,21 +202,6 @@ def alarm_reminder_action(text):
     print("checkpoint:  ",text)
     if re.search(r'\b(xem|danh sách|hiện tại)\s+báo\s+thức\b', text, re.IGNORECASE):
         return list_alarms_from_cron()
-    # set_match = re.search(
-    #     r'\b(?:đặt|tạo|lên lịch|báo thức|đánh thức tôi|hẹn giờ)\b.*?\b(?:lúc|trong|sau)?\s*' +
-    #     r'(' +
-    #         r'\d{1,2}\s*tiếng\s*\d{1,2}\s*phút\s*nữa|' +  # "x tiếng y phút nữa"
-    #         r'\d{1,2}\s*giờ\s*\d{1,2}\s*phút\s*nữa|' +   # "x giờ y phút nữa"
-    #         r'\d{1,2}\s*tiếng\s*nữa|' +                  # "x tiếng nữa"
-    #         r'\d{1,2}\s*giờ\s*nữa|' +                    # "x giờ nữa"
-    #         r'giờ\s*này|' +                               # "giờ này"
-    #         r'\d{1,2}\s*giờ\s*đúng|' +                    # "x giờ đúng"
-    #         r'\d{1,2}\s*giờ\s*\d{1,2}|' +                 # "x giờ y"
-    #         r'\d+\s*phút(?:\s*nữa)?|' +                  # "x phút" hoặc "x phút nữa"
-    #         r'\d+:\d+' +                                  # "hh:mm"
-    #     r')',
-    #     text, re.IGNORECASE
-    # )
     set_match = re.search(
         r'\b(?:đặt|tạo|lên lịch|báo thức|đánh thức tôi|hẹn giờ)\b.*?\b(?:lúc|trong|sau)?\s*' +
         r'(' +
