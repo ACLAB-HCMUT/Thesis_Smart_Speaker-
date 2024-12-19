@@ -83,7 +83,13 @@ def get_directions(origin_address, destination_address, location=None, vehicle="
             route = data["routes"][0]
             distance = route["legs"][0]["distance"]["text"]
             duration = route["legs"][0]["duration"]["text"]
-            return f"Khoảng cách từ '{origin_full_address}' đến '{destination_full_address}' là {distance}, thời gian di chuyển khoảng {duration}."
+            steps=route["legs"][0]["steps"]
+            instructions = [step["html_instructions"] for step in steps]
+            guide=" "
+            for instruction in instructions:
+                guide+=instruction
+                guide+=" "
+            return f"Khoảng cách từ '{origin_full_address}' đến '{destination_full_address}' là {distance}, thời gian di chuyển khoảng {duration}. {guide}"
         else:
             return "Không tìm thấy lộ trình phù hợp."
     else:
