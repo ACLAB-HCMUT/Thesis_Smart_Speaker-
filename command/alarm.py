@@ -200,6 +200,12 @@ def parse_time_expression(time_expression):
 
 def alarm_reminder_action(text):
     print("checkpoint:  ",text)
+    if 'sau' in text:
+        print("Biểu thức chứa từ 'sau', xử lý như thời gian tương đối.")
+        # Loại bỏ từ "sau" khỏi biểu thức
+        text = text.replace("sau", "").strip()
+        text+= "nữa"
+
     if re.search(r'\b(xem|danh sách|hiện tại)\s+báo\s+thức\b', text, re.IGNORECASE):
         return list_alarms_from_cron()
     set_match = re.search(
