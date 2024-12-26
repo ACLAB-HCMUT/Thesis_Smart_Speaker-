@@ -97,6 +97,10 @@ def get_directions(origin_address, destination_address, location=None, vehicle="
 
 address_data = {"origin": None, "destination": None}
 
+def reset_address_data():
+    global address_data
+    address_data = {"origin": None, "destination": None}
+
 def process_direction(command):
     global address_data
 
@@ -125,7 +129,8 @@ def process_direction(command):
             response = "Có lỗi xảy ra khi tìm đường. Vui lòng thử lại sau."
             print(f"Lỗi: {e}")
             speak(response)
-
+        finally:
+            reset_address_data
     else:
         if not address_data["origin"]:
             response = "Vui lòng cung cấp địa điểm hiện tại của bạn:"
@@ -154,6 +159,8 @@ def process_direction(command):
                 response = "Có lỗi xảy ra khi tìm đường. Vui lòng thử lại sau."
                 print(f"Lỗi: {e}")
                 speak(response)
+            finally:
+                reset_address_data()
 
 # process_direction("Hỏi đường từ trường đại học Bách Khoa TPHCM đến quận 9")
 # process_direction("Hỏi đường từ trường đại học Bách Khoa TPHCM tới quận 9")
