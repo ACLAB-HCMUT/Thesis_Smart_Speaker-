@@ -2,7 +2,7 @@ from Adafruit_IO import Client, Data
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-from speak import speak
+from audio_utils import speak
 
 load_dotenv()
 AIO_USERNAME = os.getenv("AIO_USERNAME")

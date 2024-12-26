@@ -31,7 +31,7 @@ SYSTEM_PROMPT = {
     )
 }
 
-def chatgpt_response(prompt):
+def get_response(prompt):
   
     conversation_history.append({"role": "user", "content": prompt})
 
