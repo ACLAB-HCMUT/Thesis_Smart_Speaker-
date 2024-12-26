@@ -34,7 +34,7 @@ def search_tavily(query, max_results=5, search_depth="basic"):
 def summarize_with_chatgpt(query, context):
    
     prompt = f"Question: {query}\nContext: {context}\nPlease provide a concise and relevant answer."
-    return chatgpt_response(prompt)
+    return get_response(prompt)
 
 
 def search_and_summarize(query):

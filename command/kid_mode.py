@@ -1,9 +1,9 @@
 import os
 from playsound import playsound
-from speak import speak
+from audio_utils import speak
 import random
 import subprocess
-from listen import standalone_listen  
+from command_listener import standalone_listen  
 SOUND_FOLDER = "sound/animals"
 SOUND_FOLDER_STORIES = "sound/story"
 # SOUND_FOLDER = "animals"
