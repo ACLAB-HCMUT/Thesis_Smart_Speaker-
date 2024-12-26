@@ -8,11 +8,12 @@ from alarm import alarm_reminder_action
 from music import search_youtube,download_and_play_youtube_audio,stop_music
 # from notification import *
 from my_calendar import get_calendar_events, input_for_add_event,extract_time_from_command,delete_event_by_name_or_time,extract_event_name_from_command
-from ask_time import get_current_time
+from ask_time import get_current_time,get_current_date_vn_format
 from kid import play_sound_animal, play_story_sound
 from direction import process_direction
 # from math_calculation import math_calculation
 from fine_tuning import control
+from weather import fetch_weather_data 
 import re
 
 current_eight_d_audio = None
@@ -20,6 +21,7 @@ def process_command(command):
     global music_process
     global default_voice
     global current_eight_d_audio
+    command=command.lower()
     # if any(keyword in command for keyword in ["8d","8D","tám đê", "8 đê"]):
 
     #     query = command
@@ -117,6 +119,13 @@ def process_command(command):
         
         print(response)
         speak(response)
+    elif command =="hôm nay":
+        today= get_current_date_vn_format()
+        today += " "
+        today += fetch_weather_data()
+        speak(today)
+    elif command=="thời tiết" or command=="thời tiết hôm nay":
+        speak(fetch_weather_data())
 
     elif any(
         keyword in command
