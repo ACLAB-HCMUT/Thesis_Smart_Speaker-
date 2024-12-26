@@ -1,18 +1,18 @@
 from control import set_volume
-from chatgpt import chatgpt_response
-from is_device import is_device_command
-from speak import speak, set_default_voice
+from chatgpt import get_response
+from device_utils import is_device_command
+from audio_utils import speak, set_default_voice
 from search_agent import search_and_summarize
-from alarm import alarm_reminder_action
+from reminders import alarm_reminder_action
 # from music8D import search_youtube8,download_and_play_youtube_audio8,stop_music8
 from music import search_youtube,download_and_play_youtube_audio,stop_music
 # from notification import *
 from my_calendar import get_calendar_events, input_for_add_event,extract_time_from_command,delete_event_by_name_or_time,extract_event_name_from_command
-from ask_time import get_current_time,get_current_date_vn_format
-from kid import play_sound_animal, play_story_sound
-from direction import process_direction
+from time_utils import get_current_time,get_current_date_vn_format
+from kid_mode import play_sound_animal, play_story_sound
+from navigation import process_direction
 # from math_calculation import math_calculation
-from fine_tuning import control
+from tuning import control
 from weather import fetch_weather_data 
 import re
 
@@ -273,6 +273,6 @@ def process_command(command):
     #         speak("Xin lỗi, tôi không thể xử lý phép toán này.")
     else:
         print("Gửi yêu cầu đến ChatGPT API...")
-        chatgpt_answer = chatgpt_response(command)
+        chatgpt_answer = get_response(command)
         print(f"ChatGPT trả lời: {chatgpt_answer}")
         speak(chatgpt_answer)

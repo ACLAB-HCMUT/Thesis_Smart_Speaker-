@@ -14,7 +14,7 @@ def fetch_weather_data():
         raise ValueError("API Key is not set. Please check your .env file.")
 
     weather_api_url = (
-        f"https://api.openweathermap.org/data/2.5/weather?lat={LAT}&lon={LON}&appid={API_KEY}&units=metric&lang=vi⁩"
+        f"https://api.openweathermap.org/data/2.5/weather?lat={LAT}&lon={LON}&appid={API_KEY}&units=metric&lang=vi"
     )
 
     try:

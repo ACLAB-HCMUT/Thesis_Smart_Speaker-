@@ -9,8 +9,8 @@ import threading
 WELCOME_SOUND="sound/welcome.mp3"
 def import_modules():
     global process_command, speak, listen_command
-    from process import process_command
-    from speak import speak
+    from command_processor import process_command
+    from audio_utils import speak
     from listen import listen_command
 
 def main():
