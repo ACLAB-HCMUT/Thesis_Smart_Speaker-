@@ -1,5 +1,5 @@
 import speech_recognition as sr
-from speak import speak
+from audio_utils import speak
 import os
 from google.cloud import speech
 from microphone_stream import MicrophoneStream 

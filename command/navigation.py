@@ -2,8 +2,8 @@ import requests
 import os
 from dotenv import load_dotenv
 import re
-from speak import speak
-from listen import listen_command
+from audio_utils import speak
+from command_listener import listen_command
 load_dotenv()
 API_MAP_KEY = os.getenv('API_MAP_KEY')
 

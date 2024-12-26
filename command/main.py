@@ -11,7 +11,7 @@ def import_modules():
     global process_command, speak, listen_command
     from command_processor import process_command
     from audio_utils import speak
-    from listen import listen_command
+    from command_listener import listen_command
 
 def main():
 

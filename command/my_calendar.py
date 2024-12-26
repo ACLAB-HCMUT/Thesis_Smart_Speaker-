@@ -8,7 +8,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from audio_utils import speak
-from listen import listen_command
+from command_listener import listen_command
 from fuzzywuzzy import fuzz # type: ignore
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 def normalize_date(raw_date):

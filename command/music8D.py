@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 import pygame
 import threading
-from listen import standalone_listen
+from command_listener import standalone_listen
 from eight_d_audio import EightDAudio
 
 load_dotenv()
