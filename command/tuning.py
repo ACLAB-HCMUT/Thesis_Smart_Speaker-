@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 API_KEY = os.getenv('API_FT_KEY')
 adafruit_base_url = "https://io.adafruit.com/api/feeds"
-
+model_id = os.getenv("MODEL")
 action_on = "1001"  # Bật
 action_off = "1000"  # Tắt
 light_code = "4103"  # Đèn
@@ -28,7 +28,7 @@ def control(command):
     }
 
     data = {
-        "model": "ft:gpt-3.5-turbo-0125:personal::AcE70vZT",
+        "model": model_id,
         "messages": [
             {"role": "user", "content": f"{command}"}],
         "max_tokens": 100
@@ -53,7 +53,8 @@ def control(command):
 
            
                 actions=action.split(',') 
-                devices=device.split(',')
+                # devices=device.split(',')
+                devices = [d.strip() for d in device.split(',')]
                 locations=location.split(',')
 
                 
