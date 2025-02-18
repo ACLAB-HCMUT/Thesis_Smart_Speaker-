@@ -3,7 +3,7 @@ from playsound import playsound
 from pydub import AudioSegment
 from google.cloud import texttospeech
 import os
-SOUND_PATH = "sound/command.mp3" 
+SOUND_PATH = "./command/sound/command.mp3" 
 MYKEY_PATH = "my_key.json"
 
 default_voice="default"
