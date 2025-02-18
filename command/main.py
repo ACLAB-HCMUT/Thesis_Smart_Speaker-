@@ -4,6 +4,7 @@ import os
 sys.path.append(os.path.dirname(__file__))
 # from notification import monitor_temperature, monitor_moisture
 from playsound import playsound
+from audio_utils import speak
 import re
 import threading
 WELCOME_SOUND="sound/welcome.mp3"
