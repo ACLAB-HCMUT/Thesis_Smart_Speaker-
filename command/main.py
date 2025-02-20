@@ -7,7 +7,7 @@ from playsound import playsound
 from audio_utils import speak
 import re
 import threading
-WELCOME_SOUND="command/sound/welcome.mp3"
+WELCOME_SOUND="sound/welcome.mp3"
 def import_modules():
     global process_command, speak, listen_command
     from command_processor import process_command
