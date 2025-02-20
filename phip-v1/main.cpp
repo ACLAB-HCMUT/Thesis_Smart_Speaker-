@@ -33,7 +33,6 @@ void timer_handler(int signum) {
 }
 
 int main(int argc, char **argv) {
-    while (1) {
     // Configure timer
     struct sigaction sa;
     struct itimerspec timer_spec;
@@ -51,11 +50,11 @@ int main(int argc, char **argv) {
     sev.sigev_value.sival_ptr = &timer_id;
     timer_create(CLOCK_REALTIME, &sev, &timer_id);
 
-    // Start timer: every 700ms
+    // Start timer: every 100ms
     timer_spec.it_value.tv_sec = 0;
-    timer_spec.it_value.tv_nsec = 500 * 1000000; // 700ms
+    timer_spec.it_value.tv_nsec = 900 * 1000000; // 100ms
     timer_spec.it_interval.tv_sec = 0;
-    timer_spec.it_interval.tv_nsec = 500 * 1000000; // 700ms
+    timer_spec.it_interval.tv_nsec = 900 * 1000000; // 100ms
     timer_settime(timer_id, 0, &timer_spec, NULL);
 
     while (1) {
@@ -74,12 +73,13 @@ int main(int argc, char **argv) {
             fclose(file);
             Py_Finalize();
             printf("main.py completed.\n");
+            break;
             // Reset state for restarting inference
             run_python_script = 0;
         }
-        //usleep(10); // Poll to avoid busy waiting
+        usleep(100000); // Poll to avoid busy waiting
     }
-    }
+
     return 0;
 }
 
